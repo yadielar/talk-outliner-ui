@@ -1,8 +1,6 @@
-import './PWABadge.css';
-
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
-function PWABadge() {
+export function PWABadge() {
   // check for updates every hour
   const period = 60 * 60 * 1000;
 
@@ -29,11 +27,12 @@ function PWABadge() {
     setNeedRefresh(false);
   }
 
+  // TODO: Refactor classnames to use Tailwind
   return (
-    <div className="PWABadge" role="alert" aria-labelledby="toast-message">
+    <div role="alert" aria-labelledby="toast-message">
       {(offlineReady || needRefresh) && (
-        <div className="PWABadge-toast">
-          <div className="PWABadge-message">
+        <div className="position-fixed right-0 bottom-0 m-4 p-3 border border-gray-300 rounded z-10 text-left shadow-md bg-white">
+          <div className="mb-2">
             {offlineReady ? (
               <span id="toast-message">App ready to work offline</span>
             ) : (
@@ -42,16 +41,19 @@ function PWABadge() {
               </span>
             )}
           </div>
-          <div className="PWABadge-buttons">
+          <div>
             {needRefresh && (
               <button
-                className="PWABadge-toast-button"
+                className="border border-gray-500 rounded px-2 py-1 mr-2"
                 onClick={() => updateServiceWorker(true)}
               >
                 Reload
               </button>
             )}
-            <button className="PWABadge-toast-button" onClick={() => close()}>
+            <button
+              className="border border-gray-500 rounded px-2 py-1 mr-2"
+              onClick={() => close()}
+            >
               Close
             </button>
           </div>
@@ -60,8 +62,6 @@ function PWABadge() {
     </div>
   );
 }
-
-export default PWABadge;
 
 /**
  * This function will register a periodic sync check every hour, you can modify the interval as needed.
