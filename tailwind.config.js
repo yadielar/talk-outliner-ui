@@ -1,3 +1,4 @@
+import twTypography from '@tailwindcss/typography';
 import twAnimate from 'tailwindcss-animate';
 
 /** @type {import('tailwindcss').Config} */
@@ -8,10 +9,6 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
     },
     extend: {
       colors: {
@@ -70,5 +67,5 @@ export default {
       },
     },
   },
-  plugins: [twAnimate],
+  plugins: [twTypography, twAnimate],
 };

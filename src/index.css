@@ -67,3 +67,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Styles for the editor when focused */
+.ProseMirror.ProseMirror-focused {
+  outline: none;
+}
+
+/* Styles for the editor's content area */
+.ProseMirror {
+  overflow-wrap: break-word;
+  white-space: break-spaces;
+  padding: 0.5rem 10px;
+  min-height: 1rem;
+}
+
+/* Styles for the editor's placeholder text */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--muted);
+  pointer-events: none;
+  height: 0;
+}
+
+/* Styles for elements that make up the content */
+.ProseMirror {
+  @apply prose dark:prose-invert prose-p:m-0;
+}
+.ProseMirror p:empty:before {
+  content: ' ';
+  white-space: pre;
+}
