@@ -1,10 +1,12 @@
 import {
-  MoveUp,
-  MoveDown,
+  File,
   IndentDecrease,
   IndentIncrease,
+  MoveUp,
+  MoveDown,
   Plus,
   Trash,
+  FileX2,
 } from 'lucide-react';
 import { PointParsed } from '@/types';
 import { cn } from '@/lib/utils';
@@ -29,6 +31,14 @@ export function PointEditor({
   onRemove,
 }: PointEditorProps) {
   const isFirstLevel = point.position.length === 1;
+
+  function handleAddScript() {
+    onChange({ ...point, script: '' });
+  }
+
+  function handleRemoveScript() {
+    onChange({ ...point, script: undefined });
+  }
 
   return (
     <div className={cn('pt-4', !isFirstLevel && 'pl-4')}>
@@ -66,6 +76,21 @@ export function PointEditor({
           >
             <IndentIncrease className="h-4 w-4" />
           </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={
+              typeof point.script === 'string'
+                ? handleRemoveScript
+                : handleAddScript
+            }
+          >
+            {typeof point.script === 'string' ? (
+              <FileX2 className="h-4 w-4" />
+            ) : (
+              <File className="h-4 w-4" />
+            )}
+          </Button>
         </div>
 
         <div className="flex items-center space-x-2">
@@ -84,7 +109,17 @@ export function PointEditor({
         onChange={(value) => onChange({ ...point, idea: value })}
       />
 
-      {point.points && point.points.length > 0 ? (
+      {typeof point.script === 'string' && (
+        <div className="mt-2">
+          <ContentEditor
+            key={point.id}
+            initialValue={point.script}
+            onChange={(value) => onChange({ ...point, script: value })}
+          />
+        </div>
+      )}
+
+      {point.points && point.points.length > 0 && (
         <div>
           {point.points.map((subpoint) => (
             <PointEditor
@@ -98,7 +133,7 @@ export function PointEditor({
             />
           ))}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
