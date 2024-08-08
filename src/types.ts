@@ -1,7 +1,10 @@
-import { JSONContent } from '@tiptap/react';
+import { Content } from '@tiptap/react';
+
+export type { Content };
 
 export interface OutlineDoc {
   name: string;
+  parsed?: boolean;
   head: {
     title: string;
     objective: string;
@@ -22,8 +25,6 @@ export interface Point {
   points?: Point[];
 }
 
-export type Content = JSONContent;
-
 export type PointMovement =
   | 'move_up'
   | 'move_down'
@@ -40,6 +41,7 @@ export type Voice =
   | 'action';
 
 export interface OutlineDocParsed extends OutlineDoc {
+  parsed: true;
   body: {
     points: PointParsed[];
   };

@@ -1,4 +1,5 @@
-import { OutlineDoc } from '../types';
+import { OutlineDoc, OutlineDocParsed } from '../types';
+import { cleanOutlineDoc, isOutlineDocParsed } from './document-utils';
 
 export const documentStorage = {
   save: saveDocument,
@@ -20,14 +21,16 @@ function loadDocument(): OutlineDoc | undefined {
   }
 }
 
-function saveDocument(document: OutlineDoc): void {
-  const json = JSON.stringify(document);
+function saveDocument(doc: OutlineDoc | OutlineDocParsed): void {
+  const cleanDoc = isOutlineDocParsed(doc) ? cleanOutlineDoc(doc) : doc;
+  const json = JSON.stringify(cleanDoc);
+
   try {
     localStorage.setItem(DOCUMENT_STORAGE_KEY, json);
-    console.log(`Document "${document.name}" saved.`);
+    console.log(`Document "${doc.name}" saved.`);
   } catch (error) {
     if (error instanceof DOMException && error.name === 'QuotaExceededError') {
-      console.error(`Error saving document "${document.name}":`, error);
+      console.error(`Error saving document "${doc.name}":`, error);
       alert('Local Storage quota exceeded. Document may be too large to save.');
     } else {
       throw error;

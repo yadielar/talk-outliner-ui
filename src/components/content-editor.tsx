@@ -1,10 +1,5 @@
 import { memo } from 'react';
-import {
-  EditorContent,
-  useEditor,
-  FloatingMenu,
-  BubbleMenu,
-} from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Content } from '@/types';
 
@@ -23,16 +18,14 @@ export const ContentEditor = memo(function ContentEditor({
     extensions,
     content: initialValue ?? '<p>Hello there!</p>',
     onUpdate(data) {
-      const json = data.editor.getJSON();
-      onChange(json);
+      const html = data.editor.getHTML();
+      onChange(html);
     },
   });
 
   return (
     <EditorContainer>
       <EditorContent editor={editor} />
-      <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
-      <BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>
     </EditorContainer>
   );
 });

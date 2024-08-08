@@ -31,14 +31,7 @@ export function createOutlineDoc(): OutlineDoc {
  */
 export function createPoint(): Point {
   return {
-    idea: {
-      type: 'doc',
-      content: [
-        {
-          type: 'paragraph',
-        },
-      ],
-    },
+    idea: '',
   };
 }
 
@@ -53,6 +46,7 @@ export function createPoint(): Point {
 export function parseOutlineDoc(outlineDoc: OutlineDoc): OutlineDocParsed {
   const outlineDocParsed: OutlineDocParsed = {
     ...outlineDoc,
+    parsed: true,
     body: {
       ...outlineDoc.body,
       points: outlineDoc.body.points.map((point, index, array) => {
@@ -103,6 +97,24 @@ export function parsePoint(
 }
 
 /**
+ * Checks if an outline document has been parsed and narrows the type.
+ */
+export function isOutlineDocParsed(
+  doc: OutlineDoc | OutlineDocParsed,
+): doc is OutlineDocParsed {
+  return (doc as OutlineDocParsed).parsed === true;
+}
+
+/**
+ * Checks if a point has been parsed and narrows the type.
+ */
+export function isPointParsed(
+  point: Point | PointParsed,
+): point is PointParsed {
+  return (point as PointParsed).id !== undefined;
+}
+
+/**
  * Calculates the possible movements for a point in the outline.
  */
 function calculatePointMovement(
@@ -139,6 +151,7 @@ function calculatePointMovement(
 export function cleanOutlineDoc(outlineDoc: OutlineDocParsed): OutlineDoc {
   const outlineDocClean: OutlineDoc = {
     ...outlineDoc,
+    parsed: undefined,
     body: {
       ...outlineDoc.body,
       points: outlineDoc.body.points as Point[],

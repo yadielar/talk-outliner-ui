@@ -4,7 +4,6 @@ import { documentStorage } from '@/lib/document-storage';
 import {
   createOutlineDoc,
   parseOutlineDoc,
-  cleanOutlineDoc,
   updatePoint,
   movePointUp,
   movePointDown,
@@ -22,7 +21,7 @@ export function OutlineEditor() {
   });
 
   useEffect(() => {
-    documentStorage.save(cleanOutlineDoc(outlineDoc));
+    documentStorage.save(outlineDoc);
   }, [outlineDoc]);
 
   function handlePointChange(point: PointParsed) {
