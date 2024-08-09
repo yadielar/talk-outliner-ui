@@ -107,6 +107,7 @@ export function PointEditor({
         key={point.id}
         initialValue={point.idea}
         onChange={(value) => onChange({ ...point, idea: value })}
+        placeholder="Write your idea here..."
       />
 
       {typeof point.script === 'string' && (
@@ -115,6 +116,7 @@ export function PointEditor({
             key={point.id}
             initialValue={point.script}
             onChange={(value) => onChange({ ...point, script: value })}
+            placeholder="Write your script here..."
           />
         </div>
       )}

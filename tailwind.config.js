@@ -12,6 +12,7 @@ export default {
     },
     extend: {
       colors: {
+        // shadcn-ui colors
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -45,6 +46,9 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+
+        // custom colors
+        quote: 'hsl(var(--quote))',
       },
       borderRadius: {
         lg: 'var(--radius)',

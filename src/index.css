@@ -4,6 +4,12 @@
 
 @layer base {
   :root {
+    /*
+    ----------------------------------------------------------------------------
+    shadcn-ui variables
+    ----------------------------------------------------------------------------
+    */
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -23,15 +29,30 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    --radius: 0.5rem;
+
+    /*
+    ----------------------------------------------------------------------------
+    feature variables
+    ----------------------------------------------------------------------------
+    */
+
+    --quote: 217 100% 47%;
   }
 
   .dark {
+    /*
+    ----------------------------------------------------------------------------
+    shadcn-ui variables
+    ----------------------------------------------------------------------------
+    */
+
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -56,6 +77,14 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /*
+    ----------------------------------------------------------------------------
+    feature variables
+    ----------------------------------------------------------------------------
+    */
+
+    --quote: 217 100% 47%;
   }
 }
 
@@ -85,14 +114,23 @@
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
-  color: var(--muted);
+  color: hsl(var(--foreground) / 25%);
   pointer-events: none;
   height: 0;
 }
 
 /* Styles for elements that make up the content */
 .ProseMirror {
-  @apply prose dark:prose-invert prose-p:m-0;
+  @apply max-w-none prose dark:prose-invert prose-p:m-0;
+  @apply prose-blockquote:my-1 prose-blockquote:text-quote prose-blockquote:font-normal;
+  @apply prose-ul:my-1 prose-ol:my-1 prose-li:my-0;
+}
+.ProseMirror blockquote {
+  quotes: none;
+}
+.ProseMirror q {
+  @apply text-quote italic;
+  quotes: none;
 }
 .ProseMirror p:empty:before {
   content: ' ';
