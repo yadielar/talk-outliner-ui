@@ -1,6 +1,4 @@
-import { Content } from '@tiptap/react';
-
-export type { Content };
+import { JSONContent } from '@tiptap/react';
 
 export interface OutlineDoc {
   name: string;
@@ -21,9 +19,11 @@ export interface Point {
   idea: Content;
   script?: Content;
   voice?: Voice;
-  voiceScope?: 'node' | 'subtree';
+  voiceScope?: VoiceScope;
   points?: Point[];
 }
+
+export type Content = string | JSONContent;
 
 export type PointMovement =
   | 'move_up'
@@ -32,6 +32,7 @@ export type PointMovement =
   | 'indent_right';
 
 export type Voice =
+  | 'none'
   | 'info'
   | 'question'
   | 'reference'
@@ -39,6 +40,8 @@ export type Voice =
   | 'story'
   | 'lesson'
   | 'action';
+
+export type VoiceScope = 'node' | 'subtree';
 
 export interface OutlineDocParsed extends OutlineDoc {
   parsed: true;

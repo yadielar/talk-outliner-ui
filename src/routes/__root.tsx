@@ -20,7 +20,6 @@ export const Route = createRootRoute({
           <ColorSchemeToggle />
         </div>
       </div>
-      <hr />
       <Outlet />
       <PWABadge />
       <TanStackRouterDevtools />

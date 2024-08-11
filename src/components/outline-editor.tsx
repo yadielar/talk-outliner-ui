@@ -79,7 +79,7 @@ export function OutlineEditor() {
   }
 
   return (
-    <div className="md:container lg:max-w-5xl px-4 pb-4 md:px-5">
+    <div className="md:container lg:max-w-5xl px-4 pb-8 md:px-5">
       {outlineDoc.body.points.map((point) => (
         <PointEditor
           key={point.id}

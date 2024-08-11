@@ -49,6 +49,41 @@ export default {
 
         // custom colors
         quote: 'hsl(var(--quote))',
+        question: {
+          DEFAULT: 'hsl(var(--question))',
+          active: 'hsl(var(--question-active))',
+          foreground: 'hsl(var(--question-foreground))',
+        },
+        info: {
+          DEFAULT: 'hsl(var(--info))',
+          active: 'hsl(var(--info-active))',
+          foreground: 'hsl(var(--info-foreground))',
+        },
+        reference: {
+          DEFAULT: 'hsl(var(--reference))',
+          active: 'hsl(var(--reference-active))',
+          foreground: 'hsl(var(--reference-foreground))',
+        },
+        example: {
+          DEFAULT: 'hsl(var(--example))',
+          active: 'hsl(var(--example-active))',
+          foreground: 'hsl(var(--example-foreground))',
+        },
+        story: {
+          DEFAULT: 'hsl(var(--story))',
+          active: 'hsl(var(--story-active))',
+          foreground: 'hsl(var(--story-foreground))',
+        },
+        lesson: {
+          DEFAULT: 'hsl(var(--lesson))',
+          active: 'hsl(var(--lesson-active))',
+          foreground: 'hsl(var(--lesson-foreground))',
+        },
+        action: {
+          DEFAULT: 'hsl(var(--action))',
+          active: 'hsl(var(--action-active))',
+          foreground: 'hsl(var(--action-foreground))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -68,6 +103,14 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      typography: {
+        slate: {
+          css: {
+            '--tw-prose-body': 'inherit',
+            '--tw-prose-bold': 'inherit',
+          },
+        },
       },
     },
   },

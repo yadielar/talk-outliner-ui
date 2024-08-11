@@ -31,6 +31,11 @@ export const ContentEditor = memo(function ContentEditor({
   const editor = useEditor({
     extensions,
     content: initialValue || '',
+    editorProps: {
+      attributes: {
+        class: 'Content',
+      },
+    },
   });
 
   /**

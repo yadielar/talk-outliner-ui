@@ -44,6 +44,34 @@
     */
 
     --quote: 217 100% 47%;
+
+    --question: 358 100% 96%;
+    --question-active: 358 100% 90%;
+    --question-foreground: 2 58% 54%;
+
+    --info: 222 7% 96%;
+    --info-active: 222 7% 90%;
+    --info-foreground: 222 0% 20%;
+
+    --reference: 217 100% 94%;
+    --reference-active: 217 100% 90%;
+    --reference-foreground: 217 0% 20%;
+
+    --example: 32 100% 96%;
+    --example-active: 32 100% 90%;
+    --example-foreground: 32 88% 45%;
+
+    --story: 270 100% 96%;
+    --story-active: 270 100% 90%;
+    --story-foreground: 270 50% 40%;
+
+    --lesson: 56 100% 96%;
+    --lesson-active: 56 100% 90%;
+    --lesson-foreground: 45 80% 36%;
+
+    --action: 111 100% 96%;
+    --action-active: 111 100% 90%;
+    --action-foreground: 148 32% 40%;
   }
 
   .dark {
@@ -85,6 +113,34 @@
     */
 
     --quote: 217 100% 47%;
+
+    --question: 2 36% 16%;
+    --question-active: 2 41% 25%;
+    --question-foreground: 2 58% 54%;
+
+    --info: 222 25% 10%;
+    --info-active: 222 25% 20%;
+    --info-foreground: 210 40% 98%;
+
+    --reference: 217 100% 15%;
+    --reference-active: 217 100% 20%;
+    --reference-foreground: 210 40% 98%;
+
+    --example: 32 36% 16%;
+    --example-active: 32 41% 25%;
+    --example-foreground: 32 88% 45%;
+
+    --story: 270 36% 16%;
+    --story-active: 270 41% 25%;
+    --story-foreground: 270 50% 40%;
+
+    --lesson: 56 36% 16%;
+    --lesson-active: 56 41% 20%;
+    --lesson-foreground: 45 80% 50%;
+
+    --action: 111 36% 16%;
+    --action-active: 111 41% 20%;
+    --action-foreground: 148 50% 40%;
   }
 }
 
@@ -97,42 +153,37 @@
   }
 }
 
-/* Styles for the editor when focused */
-.ProseMirror.ProseMirror-focused {
-  outline: none;
+@layer components {
+  /* Styles for elements that make up the content */
+  .Content {
+    @apply max-w-none prose prose-slate dark:prose-invert;
+    @apply prose-p:m-0 prose-ul:my-1 prose-ol:my-1 prose-li:my-0;
+    @apply prose-blockquote:my-1 prose-blockquote:text-quote prose-blockquote:font-normal;
+  }
+  .Content blockquote {
+    quotes: none;
+  }
+  .Content q {
+    @apply text-quote italic;
+    quotes: none;
+  }
+  .Content p:empty:before {
+    @apply content-['_'] whitespace-pre;
+  }
 }
 
-/* Styles for the editor's content area */
+/* Styles for the editor when focused */
+.ProseMirror.ProseMirror-focused {
+  /* outline: none; */
+  @apply outline-none outline-0;
+}
+
+/* Styles for the editor's contenteditable */
 .ProseMirror {
-  overflow-wrap: break-word;
-  white-space: break-spaces;
-  padding: 0.5rem 10px;
-  min-height: 1rem;
+  @apply break-words whitespace-break-spaces py-2 px-2.5 min-h-4;
 }
 
 /* Styles for the editor's placeholder text */
 .ProseMirror p.is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: hsl(var(--foreground) / 25%);
-  pointer-events: none;
-  height: 0;
-}
-
-/* Styles for elements that make up the content */
-.ProseMirror {
-  @apply max-w-none prose dark:prose-invert prose-p:m-0;
-  @apply prose-blockquote:my-1 prose-blockquote:text-quote prose-blockquote:font-normal;
-  @apply prose-ul:my-1 prose-ol:my-1 prose-li:my-0;
-}
-.ProseMirror blockquote {
-  quotes: none;
-}
-.ProseMirror q {
-  @apply text-quote italic;
-  quotes: none;
-}
-.ProseMirror p:empty:before {
-  content: ' ';
-  white-space: pre;
+  @apply content-[attr(data-placeholder)] float-left text-foreground/25 pointer-events-none h-0;
 }

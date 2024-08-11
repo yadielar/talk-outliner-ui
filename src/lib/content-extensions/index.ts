@@ -1,7 +1,16 @@
 import { useMemo } from 'react';
-import StarterKit from '@tiptap/starter-kit';
+import StarterKit, { StarterKitOptions } from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Quote } from './quote';
+
+const starterKitConfig: Partial<StarterKitOptions> = {
+  code: false,
+  codeBlock: false,
+  gapcursor: false,
+  hardBreak: false,
+  heading: false,
+  horizontalRule: false,
+};
 
 interface ContentEditorExtensionsOptions {
   placeholder: string;
@@ -12,14 +21,7 @@ export function useContentEditorExtensions({
 }: ContentEditorExtensionsOptions) {
   return useMemo(
     () => [
-      StarterKit.configure({
-        code: false,
-        codeBlock: false,
-        gapcursor: false,
-        hardBreak: false,
-        heading: false,
-        horizontalRule: false,
-      }),
+      StarterKit.configure(starterKitConfig),
       Quote,
       Placeholder.configure({ placeholder }),
     ],
@@ -27,3 +29,6 @@ export function useContentEditorExtensions({
   );
 }
 
+export function useContentRendererExtensions() {
+  return useMemo(() => [StarterKit.configure(starterKitConfig), Quote], []);
+}
