@@ -26,6 +26,36 @@ import {
 import { ContentEditor } from '@/components/content-editor';
 import { store } from '@/store';
 
+const voiceColor = cva('', {
+  variants: {
+    voice: {
+      none: '',
+      info: 'text-info-foreground',
+      question: 'text-question-foreground',
+      reference: 'text-quote', // we're using quote color for more brightness
+      example: 'text-example-foreground',
+      story: 'text-story-foreground',
+      lesson: 'text-lesson-foreground',
+      action: 'text-action-foreground',
+    },
+  },
+});
+
+const voiceBg = cva('', {
+  variants: {
+    voice: {
+      none: '',
+      info: 'bg-info',
+      question: 'bg-question',
+      reference: 'bg-reference',
+      example: 'bg-example',
+      story: 'bg-story',
+      lesson: 'bg-lesson',
+      action: 'bg-action',
+    },
+  },
+});
+
 interface PointEditorProps {
   point: PointParsed;
 }
@@ -35,36 +65,6 @@ export const PointEditor = memo(function PointEditor({
 }: PointEditorProps) {
   const isFirstLevel = point.position.length === 1;
   const { voice = 'none', voiceScope = 'subtree' } = point;
-
-  const voiceColor = cva('', {
-    variants: {
-      voice: {
-        none: '',
-        info: 'text-info-foreground',
-        question: 'text-question-foreground',
-        reference: 'text-quote', // we're using quote color for more brightness
-        example: 'text-example-foreground',
-        story: 'text-story-foreground',
-        lesson: 'text-lesson-foreground',
-        action: 'text-action-foreground',
-      },
-    },
-  });
-
-  const voiceBg = cva('', {
-    variants: {
-      voice: {
-        none: '',
-        info: 'bg-info',
-        question: 'bg-question',
-        reference: 'bg-reference',
-        example: 'bg-example',
-        story: 'bg-story',
-        lesson: 'bg-lesson',
-        action: 'bg-action',
-      },
-    },
-  });
 
   function move(point: PointParsed, direction: 'up' | 'down') {
     if (direction === 'up') {

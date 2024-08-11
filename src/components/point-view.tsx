@@ -6,6 +6,100 @@ import { PointParsed } from '@/types';
 import { ContentRenderer } from '@/components/content-renderer';
 import { cn } from '@/lib/utils';
 
+const voiceBase = cva('', {
+  variants: {
+    voice: {
+      none: '',
+      info: 'bg-info text-info-foreground',
+      question: 'bg-question text-question-foreground',
+      reference: 'bg-reference text-reference-foreground',
+      example: 'bg-example text-example-foreground',
+      story: 'bg-story text-story-foreground',
+      lesson: 'bg-lesson text-lesson-foreground',
+      action: 'bg-action text-action-foreground',
+    },
+  },
+});
+
+const container = cva('relative', {
+  variants: {
+    voice: {
+      none: '',
+      info: '[--voice-bg-active:hsl(var(--info-active))]',
+      question: '[--voice-bg-active:hsl(var(--question-active))]',
+      reference: '[--voice-bg-active:hsl(var(--reference-active))]',
+      example: '[--voice-bg-active:hsl(var(--example-active))]',
+      story: '[--voice-bg-active:hsl(var(--story-active))]',
+      lesson: '[--voice-bg-active:hsl(var(--lesson-active))]',
+      action: '[--voice-bg-active:hsl(var(--action-active))]',
+    },
+  },
+});
+
+const line = cva(
+  'p-3 mb-2 cursor-pointer hover:bg-[--voice-bg-active,hsl(var(--accent))]',
+  {
+    variants: {
+      voice: {
+        none: '',
+        info: 'hover:bg-info-active',
+        question: 'hover:bg-question-active',
+        reference: 'hover:bg-reference-active',
+        example: 'hover:bg-example-active',
+        story: 'hover:bg-story-active',
+        lesson: 'hover:bg-lesson-active',
+        action: 'hover:bg-action-active',
+      },
+      active: {
+        true: '',
+        false: '',
+      },
+    },
+    compoundVariants: [
+      {
+        voice: 'none',
+        active: true,
+        className:
+          'bg-[--voice-bg-active,hsl(var(--accent))] hover:bg-[--voice-bg-active,hsl(var(--accent))]',
+      },
+      {
+        voice: 'info',
+        active: true,
+        className: 'bg-info-active hover:bg-info-active',
+      },
+      {
+        voice: 'question',
+        active: true,
+        className: 'bg-question-active hover:bg-question-active',
+      },
+      {
+        voice: 'reference',
+        active: true,
+        className: 'bg-reference-active hover:bg-reference-active',
+      },
+      {
+        voice: 'example',
+        active: true,
+        className: 'bg-example-active hover:bg-example-active',
+      },
+      {
+        voice: 'story',
+        active: true,
+        className: 'bg-story-active hover:bg-story-active',
+      },
+      {
+        voice: 'lesson',
+        active: true,
+        className: 'bg-lesson-active hover:bg-lesson-active',
+      },
+      {
+        voice: 'action',
+        active: true,
+        className: 'bg-action-active hover:bg-action-active',
+      },
+    ],
+  },
+);
 interface PointViewProps {
   point: PointParsed;
 }
@@ -21,101 +115,6 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
 
   // @TODO Add support for script mode
   const mode = 'outline' as 'outline' | 'script';
-
-  const voiceBase = cva('', {
-    variants: {
-      voice: {
-        none: '',
-        info: 'bg-info text-info-foreground',
-        question: 'bg-question text-question-foreground',
-        reference: 'bg-reference text-reference-foreground',
-        example: 'bg-example text-example-foreground',
-        story: 'bg-story text-story-foreground',
-        lesson: 'bg-lesson text-lesson-foreground',
-        action: 'bg-action text-action-foreground',
-      },
-    },
-  });
-
-  const container = cva('relative', {
-    variants: {
-      voice: {
-        none: '',
-        info: '[--voice-bg-active:hsl(var(--info-active))]',
-        question: '[--voice-bg-active:hsl(var(--question-active))]',
-        reference: '[--voice-bg-active:hsl(var(--reference-active))]',
-        example: '[--voice-bg-active:hsl(var(--example-active))]',
-        story: '[--voice-bg-active:hsl(var(--story-active))]',
-        lesson: '[--voice-bg-active:hsl(var(--lesson-active))]',
-        action: '[--voice-bg-active:hsl(var(--action-active))]',
-      },
-    },
-  });
-
-  const line = cva(
-    'p-3 mb-2 cursor-pointer hover:bg-[--voice-bg-active,hsl(var(--accent))]',
-    {
-      variants: {
-        voice: {
-          none: '',
-          info: 'hover:bg-info-active',
-          question: 'hover:bg-question-active',
-          reference: 'hover:bg-reference-active',
-          example: 'hover:bg-example-active',
-          story: 'hover:bg-story-active',
-          lesson: 'hover:bg-lesson-active',
-          action: 'hover:bg-action-active',
-        },
-        active: {
-          true: '',
-          false: '',
-        },
-      },
-      compoundVariants: [
-        {
-          voice: 'none',
-          active: true,
-          className:
-            'bg-[--voice-bg-active,hsl(var(--accent))] hover:bg-[--voice-bg-active,hsl(var(--accent))]',
-        },
-        {
-          voice: 'info',
-          active: true,
-          className: 'bg-info-active hover:bg-info-active',
-        },
-        {
-          voice: 'question',
-          active: true,
-          className: 'bg-question-active hover:bg-question-active',
-        },
-        {
-          voice: 'reference',
-          active: true,
-          className: 'bg-reference-active hover:bg-reference-active',
-        },
-        {
-          voice: 'example',
-          active: true,
-          className: 'bg-example-active hover:bg-example-active',
-        },
-        {
-          voice: 'story',
-          active: true,
-          className: 'bg-story-active hover:bg-story-active',
-        },
-        {
-          voice: 'lesson',
-          active: true,
-          className: 'bg-lesson-active hover:bg-lesson-active',
-        },
-        {
-          voice: 'action',
-          active: true,
-          className: 'bg-action-active hover:bg-action-active',
-        },
-      ],
-    },
-  );
 
   function togglePoint() {
     store.send({ type: 'togglePointFocus', pointId: point.id });
