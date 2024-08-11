@@ -1,14 +1,38 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useSelector } from '@xstate/store/react';
 import { Link } from '@tanstack/react-router';
-import { documentStorage } from '@/lib/document-storage';
-import { parseOutlineDoc } from '@/lib/document-utils';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { PointView } from '@/components/point-view';
+import { store } from '@/store';
 
 export function OutlineViewer() {
-  const [outlineDoc] = useState(() => {
-    const doc = documentStorage.load();
-    return doc ? parseOutlineDoc(doc) : undefined;
-  });
+  const outlineDoc = useSelector(store, (state) => state.context.outlineDoc);
+  const focusedPointId = useSelector(
+    store,
+    (state) => state.context.focusedPointId,
+  );
+
+  useHotkeys(['right', 'down', 'space'], () =>
+    store.send({ type: 'focusNextPoint' }),
+  );
+
+  useHotkeys(['left', 'up', 'shift+space'], () =>
+    store.send({ type: 'focusPrevPoint' }),
+  );
+
+  useEffect(() => {
+    if (!focusedPointId) return;
+
+    const pointElement = document.getElementById(focusedPointId);
+    if (pointElement) {
+      setTimeout(() => {
+        pointElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 0);
+    }
+  }, [focusedPointId]);
 
   if (!outlineDoc) {
     return (

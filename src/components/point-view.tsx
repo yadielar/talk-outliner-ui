@@ -13,7 +13,7 @@ interface PointViewProps {
 export const PointView = memo(function PointView({ point }: PointViewProps) {
   const expanded = useSelector(
     store,
-    (state) => state.context.expandedPointId === point.id,
+    (state) => state.context.focusedPointId === point.id,
   );
   const { voice = 'none', voiceScope = 'subtree' } = point;
   const containerVoice = voiceScope === 'subtree' ? voice : 'none';
@@ -118,7 +118,7 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
   );
 
   function togglePoint() {
-    store.send({ type: 'pointToggled', pointId: point.id });
+    store.send({ type: 'togglePointFocus', pointId: point.id });
   }
 
   return (
@@ -131,6 +131,7 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
     >
       <div
         data-name="line"
+        id={point.id}
         className={cn(
           voiceBase({ voice: lineVoice }),
           line({ voice: lineVoice, active: expanded }),

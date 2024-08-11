@@ -262,21 +262,49 @@ export function getSiblingsAfter(
 
 /**
  * Replaces a point in the outline with the one provided.
+ *
+ * @IMPORTANT Do not use this function to update a point's children, like their
+ * position for example. The outline is not parsed again after calling this
+ * function, so the position of the children will be incorrect.
  */
 export function updatePoint(
   outlineDoc: OutlineDocParsed,
   point: PointParsed,
 ): OutlineDocParsed {
+  const branch = point.position[0]!;
   return {
     ...outlineDoc,
     body: {
       ...outlineDoc.body,
-      points: traversePointsAndUpdate(outlineDoc.body.points, point, (p) => {
-        return p.id === point.id;
+      points: outlineDoc.body.points.map((p, index) => {
+        // only traverse the branch where the point is located to avoid
+        // recreating other branches and maintain object references
+        if (index === branch) {
+          if (p.id === point.id) {
+            return point;
+          }
+          return {
+            ...p,
+            points: traversePointsAndUpdate(
+              p.points!,
+              point,
+              (p) => p.id === point.id,
+            ),
+          };
+        }
+        return p;
       }),
     },
   };
 }
+
+/**
+ * @NOTE
+ * Do not bother trying to optimize other operations like we did with
+ * `updatePoint` if the outline is parsed again regardless. Unless there's a
+ * way to optimize `parseOutlineDoc` and maintain references of unchanged
+ * objects, which is no easy task.
+ */
 
 /**
  *  Moves a point up in the outline.
@@ -441,6 +469,18 @@ export function removePoint(
 }
 
 // -----------------------------------------------------------------------------
+
+/**
+ * Flattens an array of points and their children into a single array.
+ *
+ * @param points The array of points to flatten.
+ * @returns A new array of points with all children flattened.
+ */
+export function flattenPoints(points: PointParsed[]): PointParsed[] {
+  return points.flatMap((point) => {
+    return [point, ...(point.points ? flattenPoints(point.points) : [])];
+  });
+}
 
 /**
  * Traverses an array of points and their children and updates the point that

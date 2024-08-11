@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   File,
   IndentDecrease,
@@ -9,7 +10,8 @@ import {
   Trash,
   FileX2,
 } from 'lucide-react';
-import { PointParsed, Voice, VoiceScope } from '@/types';
+import { cva } from 'class-variance-authority';
+import { Content, PointParsed, Voice, VoiceScope } from '@/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,24 +24,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ContentEditor } from '@/components/content-editor';
-import { cva } from 'class-variance-authority';
+import { store } from '@/store';
 
 interface PointEditorProps {
   point: PointParsed;
-  onChange: (point: PointParsed) => void;
-  onMove: (point: PointParsed, direction: 'up' | 'down') => void;
-  onIndent: (point: PointParsed, direction: 'left' | 'right') => void;
-  onAddAfter: (point: PointParsed) => void;
-  onRemove: (point: PointParsed) => void;
 }
 
-export function PointEditor({
+export const PointEditor = memo(function PointEditor({
   point,
-  onChange,
-  onMove,
-  onIndent,
-  onAddAfter,
-  onRemove,
 }: PointEditorProps) {
   const isFirstLevel = point.position.length === 1;
   const { voice = 'none', voiceScope = 'subtree' } = point;
@@ -74,20 +66,66 @@ export function PointEditor({
     },
   });
 
-  function handleAddScript() {
-    onChange({ ...point, script: '' });
+  function move(point: PointParsed, direction: 'up' | 'down') {
+    if (direction === 'up') {
+      if (!point.movement.includes('move_up')) {
+        return;
+      }
+      store.send({ type: 'movePointUp', point });
+    }
+    if (direction === 'down') {
+      if (!point.movement.includes('move_down')) {
+        return;
+      }
+      store.send({ type: 'movePointDown', point });
+    }
   }
 
-  function handleRemoveScript() {
-    onChange({ ...point, script: undefined });
+  function indent(point: PointParsed, direction: 'left' | 'right') {
+    if (direction === 'left') {
+      if (!point.movement.includes('indent_left')) {
+        return;
+      }
+      store.send({ type: 'indentPointLeft', point });
+    }
+    if (direction === 'right') {
+      if (!point.movement.includes('indent_right')) {
+        return;
+      }
+      store.send({ type: 'indentPointRight', point });
+    }
   }
 
-  function handleVoiceChange(voice: Voice) {
-    onChange({ ...point, voice });
+  function addAfter(point: PointParsed) {
+    store.send({ type: 'addNewPointAfter', point });
   }
 
-  function handleVoiceScopeChange(voiceScope: VoiceScope) {
-    onChange({ ...point, voiceScope });
+  function remove(point: PointParsed) {
+    store.send({ type: 'removePoint', point });
+  }
+
+  function addScript(point: PointParsed) {
+    store.send({ type: 'updatePoint', point: { ...point, script: '' } });
+  }
+
+  function removeScript(point: PointParsed) {
+    store.send({ type: 'updatePoint', point: { ...point, script: undefined } });
+  }
+
+  function changeIdea(point: PointParsed, idea: Content) {
+    store.send({ type: 'updatePoint', point: { ...point, idea } });
+  }
+
+  function changeScript(point: PointParsed, script: Content) {
+    store.send({ type: 'updatePoint', point: { ...point, script } });
+  }
+
+  function changeVoice(point: PointParsed, voice: Voice) {
+    store.send({ type: 'updatePoint', point: { ...point, voice } });
+  }
+
+  function changeVoiceScope(point: PointParsed, voiceScope: VoiceScope) {
+    store.send({ type: 'updatePoint', point: { ...point, voiceScope } });
   }
 
   return (
@@ -97,7 +135,7 @@ export function PointEditor({
           <Button
             variant="ghost"
             size="iconmini"
-            onClick={() => onMove(point, 'up')}
+            onClick={() => move(point, 'up')}
             disabled={!point.movement.includes('move_up')}
           >
             <MoveUp className="h-4 w-4" />
@@ -105,7 +143,7 @@ export function PointEditor({
           <Button
             variant="ghost"
             size="iconmini"
-            onClick={() => onMove(point, 'down')}
+            onClick={() => move(point, 'down')}
             disabled={!point.movement.includes('move_down')}
           >
             <MoveDown className="h-4 w-4" />
@@ -113,7 +151,7 @@ export function PointEditor({
           <Button
             variant="ghost"
             size="iconmini"
-            onClick={() => onIndent(point, 'left')}
+            onClick={() => indent(point, 'left')}
             disabled={!point.movement.includes('indent_left')}
           >
             <IndentDecrease className="h-4 w-4" />
@@ -121,7 +159,7 @@ export function PointEditor({
           <Button
             variant="ghost"
             size="iconmini"
-            onClick={() => onIndent(point, 'right')}
+            onClick={() => indent(point, 'right')}
             disabled={!point.movement.includes('indent_right')}
           >
             <IndentIncrease className="h-4 w-4" />
@@ -129,11 +167,13 @@ export function PointEditor({
           <Button
             variant="ghost"
             size="iconmini"
-            onClick={
-              typeof point.script === 'string'
-                ? handleRemoveScript
-                : handleAddScript
-            }
+            onClick={() => {
+              if (typeof point.script === 'string') {
+                removeScript(point);
+              } else {
+                addScript(point);
+              }
+            }}
           >
             {typeof point.script === 'string' ? (
               <FileX2 className="h-4 w-4" />
@@ -153,7 +193,7 @@ export function PointEditor({
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
                 value={voice}
-                onValueChange={(value) => handleVoiceChange(value as Voice)}
+                onValueChange={(value) => changeVoice(point, value as Voice)}
               >
                 <DropdownMenuRadioItem
                   value="none"
@@ -208,7 +248,7 @@ export function PointEditor({
               <DropdownMenuRadioGroup
                 value={voiceScope}
                 onValueChange={(value) =>
-                  handleVoiceScopeChange(value as VoiceScope)
+                  changeVoiceScope(point, value as VoiceScope)
                 }
               >
                 <DropdownMenuRadioItem value="subtree">
@@ -223,17 +263,13 @@ export function PointEditor({
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="iconmini"
-            onClick={() => onRemove(point)}
-          >
+          <Button variant="ghost" size="iconmini" onClick={() => remove(point)}>
             <Trash className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             size="iconmini"
-            onClick={() => onAddAfter(point)}
+            onClick={() => addAfter(point)}
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -249,7 +285,7 @@ export function PointEditor({
           <ContentEditor
             key={point.id}
             initialValue={point.idea}
-            onChange={(value) => onChange({ ...point, idea: value })}
+            onChange={(value) => changeIdea(point, value)}
             placeholder="Write your idea here..."
           />
 
@@ -258,7 +294,7 @@ export function PointEditor({
               <ContentEditor
                 key={point.id}
                 initialValue={point.script}
-                onChange={(value) => onChange({ ...point, script: value })}
+                onChange={(value) => changeScript(point, value)}
                 placeholder="Write your script here..."
               />
             </div>
@@ -268,19 +304,11 @@ export function PointEditor({
         {point.points && point.points.length > 0 && (
           <div>
             {point.points.map((subpoint) => (
-              <PointEditor
-                key={subpoint.id}
-                point={subpoint}
-                onChange={onChange}
-                onMove={onMove}
-                onIndent={onIndent}
-                onAddAfter={onAddAfter}
-                onRemove={onRemove}
-              />
+              <PointEditor key={subpoint.id} point={subpoint} />
             ))}
           </div>
         )}
       </div>
     </div>
   );
-}
+});
