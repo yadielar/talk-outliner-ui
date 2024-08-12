@@ -104,7 +104,7 @@ export const ContentEditor = memo(function ContentEditor({
           tippyOptions={{ duration: 100, maxWidth: '1000px' }}
         >
           <ScrollArea
-            className="max-w-80 md:max-w-none bg-white border border-neutral-100 shadow-md rounded-lg pt-px"
+            className="max-w-80 md:max-w-none bg-background border shadow-md rounded-lg pt-px"
             type="scroll"
           >
             <div className="flex items-center w-max space-x-4 p-1">
