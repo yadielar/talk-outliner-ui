@@ -261,6 +261,38 @@ export function getSiblingsAfter(
 }
 
 /**
+ * Changes the title of the outline.
+ */
+export function changeOutlineTitle(
+  outlineDoc: OutlineDocParsed,
+  title: string,
+): OutlineDocParsed {
+  return {
+    ...outlineDoc,
+    head: {
+      ...outlineDoc.head,
+      title,
+    },
+  };
+}
+
+/**
+ * Changes the objective of the outline.
+ */
+export function changeOutlineObjective(
+  outlineDoc: OutlineDocParsed,
+  objective: string,
+): OutlineDocParsed {
+  return {
+    ...outlineDoc,
+    head: {
+      ...outlineDoc.head,
+      objective,
+    },
+  };
+}
+
+/**
  * Replaces a point in the outline with the one provided.
  *
  * @IMPORTANT Do not use this function to update a point's children, like their

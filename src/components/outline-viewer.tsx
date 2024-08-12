@@ -49,6 +49,10 @@ export function OutlineViewer() {
 
   return (
     <div className="md:container lg:max-w-5xl px-4 pb-8 md:px-5">
+      <div className="space-y-4 mt-4 mb-8 text-center">
+        <h1 className="text-2xl font-bold">{outlineDoc.head.title}</h1>
+        <p>{outlineDoc.head.objective}</p>
+      </div>
       {outlineDoc.body.points.map((point) => (
         <PointView key={point.id} point={point} />
       ))}
