@@ -27,10 +27,10 @@ function saveDocument(doc: OutlineDoc | OutlineDocParsed): void {
 
   try {
     localStorage.setItem(DOCUMENT_STORAGE_KEY, json);
-    console.log(`Document "${doc.name}" saved.`);
+    console.log('Document saved.');
   } catch (error) {
     if (error instanceof DOMException && error.name === 'QuotaExceededError') {
-      console.error(`Error saving document "${doc.name}":`, error);
+      console.error('Error saving document:', error);
       alert('Local Storage quota exceeded. Document may be too large to save.');
     } else {
       throw error;

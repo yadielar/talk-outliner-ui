@@ -15,7 +15,6 @@ import { createRandomString } from './string';
  */
 export function createOutlineDoc(): OutlineDoc {
   return {
-    name: '',
     head: {
       title: '',
       objective: '',

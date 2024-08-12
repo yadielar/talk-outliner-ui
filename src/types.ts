@@ -1,7 +1,6 @@
 import { JSONContent } from '@tiptap/react';
 
 export interface OutlineDoc {
-  name: string;
   parsed?: boolean;
   head: {
     title: string;
