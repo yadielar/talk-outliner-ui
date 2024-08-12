@@ -170,6 +170,27 @@
   .Content p:empty:before {
     @apply content-['_'] whitespace-pre;
   }
+  .Content mark[data-voice='question'] {
+    @apply bg-question text-question-foreground;
+  }
+  .Content mark[data-voice='info'] {
+    @apply bg-info text-info-foreground;
+  }
+  .Content mark[data-voice='reference'] {
+    @apply bg-reference text-reference-foreground;
+  }
+  .Content mark[data-voice='example'] {
+    @apply bg-example text-example-foreground;
+  }
+  .Content mark[data-voice='story'] {
+    @apply bg-story text-story-foreground;
+  }
+  .Content mark[data-voice='lesson'] {
+    @apply bg-lesson text-lesson-foreground;
+  }
+  .Content mark[data-voice='action'] {
+    @apply bg-action text-action-foreground;
+  }
 }
 
 /* Styles for the editor when focused */

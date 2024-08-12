@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import StarterKit, { StarterKitOptions } from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Quote } from './quote';
+import { Voice } from './voice';
 
 const starterKitConfig: Partial<StarterKitOptions> = {
   code: false,
@@ -23,6 +24,7 @@ export function useContentEditorExtensions({
     () => [
       StarterKit.configure(starterKitConfig),
       Quote,
+      Voice,
       Placeholder.configure({ placeholder }),
     ],
     [placeholder],
@@ -30,5 +32,8 @@ export function useContentEditorExtensions({
 }
 
 export function useContentRendererExtensions() {
-  return useMemo(() => [StarterKit.configure(starterKitConfig), Quote], []);
+  return useMemo(
+    () => [StarterKit.configure(starterKitConfig), Quote, Voice],
+    [],
+  );
 }
