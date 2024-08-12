@@ -14,6 +14,7 @@ import { cva } from 'class-variance-authority';
 import { Content, PointParsed, Voice, VoiceScope } from '@/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
 import { ContentEditor } from '@/components/content-editor';
 import { store } from '@/store';
 
@@ -130,139 +132,144 @@ export const PointEditor = memo(function PointEditor({
 
   return (
     <div className={cn('pt-4', !isFirstLevel && 'pl-4')}>
-      <div className="flex justify-between mb-1">
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="iconmini"
-            onClick={() => move(point, 'up')}
-            disabled={!point.movement.includes('move_up')}
-          >
-            <MoveUp className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="iconmini"
-            onClick={() => move(point, 'down')}
-            disabled={!point.movement.includes('move_down')}
-          >
-            <MoveDown className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="iconmini"
-            onClick={() => indent(point, 'left')}
-            disabled={!point.movement.includes('indent_left')}
-          >
-            <IndentDecrease className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="iconmini"
-            onClick={() => indent(point, 'right')}
-            disabled={!point.movement.includes('indent_right')}
-          >
-            <IndentIncrease className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="iconmini"
-            onClick={() => {
-              if (typeof point.script === 'string') {
-                removeScript(point);
-              } else {
-                addScript(point);
-              }
-            }}
-          >
-            {typeof point.script === 'string' ? (
-              <FileX2 className="h-4 w-4" />
-            ) : (
-              <File className="h-4 w-4" />
-            )}
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="iconmini">
-                <MicVocal className={cn('h-4 w-4', voiceColor({ voice }))} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-52">
-              <DropdownMenuLabel>Voice</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={voice}
-                onValueChange={(value) => changeVoice(point, value as Voice)}
-              >
-                <DropdownMenuRadioItem
-                  value="none"
-                  className={voiceColor({ voice: 'none' })}
-                >
-                  None
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="info"
-                  className={voiceColor({ voice: 'info' })}
-                >
-                  Info
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="question"
-                  className={voiceColor({ voice: 'question' })}
-                >
-                  Question
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="reference"
-                  className={voiceColor({ voice: 'reference' })}
-                >
-                  Reference
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="example"
-                  className={voiceColor({ voice: 'example' })}
-                >
-                  Example
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="story"
-                  className={voiceColor({ voice: 'story' })}
-                >
-                  Story
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="lesson"
-                  className={voiceColor({ voice: 'lesson' })}
-                >
-                  Lesson
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="action"
-                  className={voiceColor({ voice: 'action' })}
-                >
-                  Action
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={voiceScope}
-                onValueChange={(value) =>
-                  changeVoiceScope(point, value as VoiceScope)
+      <div className="flex justify-between items-center mb-1">
+        <ScrollArea className="flex-1" type="scroll">
+          <div className="flex items-center w-max space-x-2 pr-2">
+            <Button
+              variant="ghost"
+              size="iconmini"
+              onClick={() => move(point, 'up')}
+              disabled={!point.movement.includes('move_up')}
+            >
+              <MoveUp className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="iconmini"
+              onClick={() => move(point, 'down')}
+              disabled={!point.movement.includes('move_down')}
+            >
+              <MoveDown className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="iconmini"
+              onClick={() => indent(point, 'left')}
+              disabled={!point.movement.includes('indent_left')}
+            >
+              <IndentDecrease className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="iconmini"
+              onClick={() => indent(point, 'right')}
+              disabled={!point.movement.includes('indent_right')}
+            >
+              <IndentIncrease className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="iconmini"
+              onClick={() => {
+                if (typeof point.script === 'string') {
+                  removeScript(point);
+                } else {
+                  addScript(point);
                 }
-              >
-                <DropdownMenuRadioItem value="subtree">
-                  Apply to child points
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="node">
-                  Apply only to this point
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+              }}
+            >
+              {typeof point.script === 'string' ? (
+                <FileX2 className="h-4 w-4" />
+              ) : (
+                <File className="h-4 w-4" />
+              )}
+            </Button>
 
-        <div className="flex items-center space-x-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="iconmini">
+                  <MicVocal className={cn('h-4 w-4', voiceColor({ voice }))} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-52">
+                <DropdownMenuLabel>Voice</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={voice}
+                  onValueChange={(value) => changeVoice(point, value as Voice)}
+                >
+                  <DropdownMenuRadioItem
+                    value="none"
+                    className={voiceColor({ voice: 'none' })}
+                  >
+                    None
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    value="info"
+                    className={voiceColor({ voice: 'info' })}
+                  >
+                    Info
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    value="question"
+                    className={voiceColor({ voice: 'question' })}
+                  >
+                    Question
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    value="reference"
+                    className={voiceColor({ voice: 'reference' })}
+                  >
+                    Reference
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    value="example"
+                    className={voiceColor({ voice: 'example' })}
+                  >
+                    Example
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    value="story"
+                    className={voiceColor({ voice: 'story' })}
+                  >
+                    Story
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    value="lesson"
+                    className={voiceColor({ voice: 'lesson' })}
+                  >
+                    Lesson
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem
+                    value="action"
+                    className={voiceColor({ voice: 'action' })}
+                  >
+                    Action
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={voiceScope}
+                  onValueChange={(value) =>
+                    changeVoiceScope(point, value as VoiceScope)
+                  }
+                >
+                  <DropdownMenuRadioItem value="subtree">
+                    Apply to child points
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="node">
+                    Apply only to this point
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+
+        <Separator orientation="vertical" className="h-6 bg-foreground/10" />
+
+        <div className="flex-none flex items-center space-x-2 pl-2">
           <Button variant="ghost" size="iconmini" onClick={() => remove(point)}>
             <Trash className="h-4 w-4" />
           </Button>
