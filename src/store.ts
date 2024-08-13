@@ -19,17 +19,44 @@ import { documentStorage } from '@/lib/document-storage';
 
 type AppContext = {
   outlineDoc: OutlineDocParsed;
+  fileHandle: FileSystemFileHandle | undefined;
   focusedPointId: string | null;
   lastFocusedPointId: string | null;
 };
 
 const initialContext: AppContext = {
-  outlineDoc: parseOutlineDoc(documentStorage.load() ?? createOutlineDoc()),
+  outlineDoc: parseOutlineDoc(
+    documentStorage.loadFromLocalStorage() ?? createOutlineDoc(),
+  ),
+  fileHandle: undefined,
   focusedPointId: null,
   lastFocusedPointId: null,
 };
 
 export const store = createStore(initialContext, {
+  loadOutlineDocFromFile: (
+    context,
+    {
+      outlineDoc,
+      fileHandle,
+    }: {
+      outlineDoc: OutlineDocParsed;
+      fileHandle: FileSystemFileHandle | undefined;
+    },
+  ) => {
+    return {
+      outlineDoc,
+      fileHandle,
+    };
+  },
+  savedOutlineDocToFile: (
+    context,
+    { fileHandle }: { fileHandle: FileSystemFileHandle | undefined },
+  ) => {
+    return {
+      fileHandle,
+    };
+  },
   changeOutlineTitle: (context, { title }: { title: string }) => {
     return {
       outlineDoc: changeOutlineTitle(context.outlineDoc, title),

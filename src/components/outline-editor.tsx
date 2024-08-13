@@ -9,7 +9,7 @@ export function OutlineEditor() {
   const outlineDoc = useSelector(store, (state) => state.context.outlineDoc);
 
   useEffect(() => {
-    documentStorage.save(outlineDoc);
+    documentStorage.saveToLocalStorage(outlineDoc);
   }, [outlineDoc]);
 
   return (
