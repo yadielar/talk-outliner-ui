@@ -18,6 +18,7 @@ export interface Point {
   movement?: PointMovement[];
   idea: Content;
   script?: Content;
+  scriptRemoved?: boolean;
   voice?: Voice;
   voiceScope?: VoiceScope;
   points?: Point[];

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import {
   File,
   IndentDecrease,
@@ -16,6 +16,16 @@ import { PointMovement, Voice, VoiceScope } from '@/enums';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,6 +76,7 @@ interface PointEditorProps {
 export const PointEditor = memo(function PointEditor({
   point,
 }: PointEditorProps) {
+  const [alertDelete, setAlertDelete] = useState(false);
   const isFirstLevel = point.position.length === 1;
   const { voice = Voice.None, voiceScope = VoiceScope.Subtree } = point;
 
@@ -103,16 +114,40 @@ export const PointEditor = memo(function PointEditor({
     store.send({ type: 'addNewPointAfter', point });
   }
 
+  function confirmRemove(point: PointParsed) {
+    if (
+      (typeof point.script === 'string' && point.script.length > 0) ||
+      (point.points && point.points.length > 0)
+    ) {
+      setAlertDelete(true);
+      return;
+    }
+    remove(point);
+  }
+
   function remove(point: PointParsed) {
     store.send({ type: 'removePoint', point });
   }
 
   function addScript(point: PointParsed) {
-    store.send({ type: 'updatePoint', point: { ...point, script: '' } });
+    store.send({
+      type: 'updatePoint',
+      point: {
+        ...point,
+        script:
+          typeof point.script === 'string' && point.scriptRemoved
+            ? point.script
+            : '',
+        scriptRemoved: false,
+      },
+    });
   }
 
   function removeScript(point: PointParsed) {
-    store.send({ type: 'updatePoint', point: { ...point, script: undefined } });
+    store.send({
+      type: 'updatePoint',
+      point: { ...point, scriptRemoved: true },
+    });
   }
 
   function changeIdea(point: PointParsed, idea: Content) {
@@ -172,14 +207,14 @@ export const PointEditor = memo(function PointEditor({
               variant="ghost"
               size="iconmini"
               onClick={() => {
-                if (typeof point.script === 'string') {
+                if (typeof point.script === 'string' && !point.scriptRemoved) {
                   removeScript(point);
                 } else {
                   addScript(point);
                 }
               }}
             >
-              {typeof point.script === 'string' ? (
+              {typeof point.script === 'string' && !point.scriptRemoved ? (
                 <FileX2 className="h-4 w-4" />
               ) : (
                 <File className="h-4 w-4" />
@@ -271,7 +306,11 @@ export const PointEditor = memo(function PointEditor({
         <Separator orientation="vertical" className="h-6 bg-foreground/10" />
 
         <div className="flex-none flex items-center space-x-2 pl-2">
-          <Button variant="ghost" size="iconmini" onClick={() => remove(point)}>
+          <Button
+            variant="ghost"
+            size="iconmini"
+            onClick={() => confirmRemove(point)}
+          >
             <Trash className="h-4 w-4" />
           </Button>
           <Button
@@ -301,7 +340,7 @@ export const PointEditor = memo(function PointEditor({
             placeholder="Write your idea here..."
           />
 
-          {typeof point.script === 'string' && (
+          {typeof point.script === 'string' && !point.scriptRemoved && (
             <div className="mt-2 pl-2 border-dotted border-foreground/20 border-l-2">
               <ContentEditor
                 key={point.id}
@@ -321,6 +360,22 @@ export const PointEditor = memo(function PointEditor({
           </div>
         )}
       </div>
+      <AlertDialog open={alertDelete} onOpenChange={setAlertDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Deleting this point will also delete all of it&apos;s children.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => remove(point)}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 });

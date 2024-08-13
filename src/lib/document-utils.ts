@@ -169,7 +169,12 @@ function cleanPoint(point: PointParsed): Point {
     id: undefined,
     position: undefined,
     movement: undefined,
+    scriptRemoved: undefined,
   } as Point;
+
+  if (point.scriptRemoved) {
+    pointClean.script = undefined;
+  }
 
   if (point.points) {
     pointClean.points = point.points.map((subpoint) => cleanPoint(subpoint));
