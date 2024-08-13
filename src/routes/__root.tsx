@@ -1,4 +1,9 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import {
+  createRootRoute,
+  Outlet,
+  useMatchRoute,
+  useNavigate,
+} from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { useSelector } from '@xstate/store/react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -18,6 +23,9 @@ export const Route = createRootRoute({
 });
 
 function Root() {
+  const navigate = useNavigate();
+  const matchRoute = useMatchRoute();
+
   const hasActiveFile = useSelector(store, (state) =>
     Boolean(state.context.fileHandle),
   );
@@ -36,6 +44,25 @@ function Root() {
     (e) => {
       e.preventDefault();
       handleSave();
+    },
+    { enableOnFormTags: true, enableOnContentEditable: true },
+  );
+
+  useHotkeys(
+    'mod+e',
+    (e) => {
+      e.preventDefault();
+      const matchView = matchRoute({ to: '/view' });
+      const matchEdit = matchRoute({ to: '/edit' });
+
+      if (matchView) {
+        navigate({ to: '/edit' });
+        return;
+      }
+      if (matchEdit) {
+        navigate({ to: '/view' });
+        return;
+      }
     },
     { enableOnFormTags: true, enableOnContentEditable: true },
   );
