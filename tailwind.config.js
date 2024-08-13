@@ -47,8 +47,13 @@ export default {
           foreground: 'hsl(var(--card-foreground))',
         },
 
-        // custom colors
+        // voice colors
         quote: 'hsl(var(--quote))',
+        neutral: {
+          DEFAULT: 'hsl(var(--neutral))',
+          active: 'hsl(var(--neutral-active))',
+          foreground: 'hsl(var(--neutral-foreground))',
+        },
         question: {
           DEFAULT: 'hsl(var(--question))',
           active: 'hsl(var(--question-active))',

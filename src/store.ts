@@ -6,6 +6,7 @@ import {
   changeOutlineObjective,
   changeOutlineTitle,
   createOutlineDoc,
+  findPoint,
   flattenPoints,
   indentPointLeft,
   indentPointRight,
@@ -93,8 +94,15 @@ export const store = createStore(initialContext, {
     };
   },
   addNewPointAfter: (context, { point }: { point: PointParsed }) => {
+    const newOutlineDoc = addNewPointAfter(context.outlineDoc, point);
+    const newPointPosition = point.position[point.position.length - 1]! + 1;
+    const newPoint = findPoint(newOutlineDoc.body.points, (point) => {
+      return point.position.toString() === newPointPosition.toString();
+    });
     return {
-      outlineDoc: addNewPointAfter(context.outlineDoc, point),
+      outlineDoc: newOutlineDoc,
+      focusedPointId: newPoint!.id,
+      lastFocusedPointId: newPoint!.id,
     };
   },
   removePoint: (context, { point }: { point: PointParsed }) => {
@@ -102,18 +110,28 @@ export const store = createStore(initialContext, {
       outlineDoc: removePoint(context.outlineDoc, point),
     };
   },
-  togglePointFocus: (context, { pointId }: { pointId: string }) => {
+  focusPoint: (context, { point }: { point: PointParsed }) => {
     return {
-      focusedPointId: context.focusedPointId !== pointId ? pointId : null,
-      lastFocusedPointId:
-        context.focusedPointId !== null
-          ? context.focusedPointId
-          : context.lastFocusedPointId,
+      focusedPointId: point.id,
+      lastFocusedPointId: point.id,
+    };
+  },
+  unfocusPoint: () => {
+    return {
+      focusedPointId: null,
+    };
+  },
+  togglePointFocus: (context, { point }: { point: PointParsed }) => {
+    const focusedPointId =
+      context.focusedPointId !== point.id ? point.id : null;
+    return {
+      focusedPointId,
+      lastFocusedPointId: focusedPointId ?? getLastFocusedPointId(context),
     };
   },
   focusNextPoint: (context) => {
     const allPoints = flattenPointsMemoed(context.outlineDoc.body.points);
-    const lastPointId = getLastFocusedPointId(context, allPoints[0]!.id);
+    const lastPointId = getLastFocusedPointId(context) ?? allPoints[0]!.id;
     const lastPointIndex = allPoints.findIndex(
       (point) => point.id === lastPointId,
     );
@@ -136,7 +154,7 @@ export const store = createStore(initialContext, {
   },
   focusPrevPoint: (context) => {
     const allPoints = flattenPointsMemoed(context.outlineDoc.body.points);
-    const lastPointId = getLastFocusedPointId(context, allPoints[0]!.id);
+    const lastPointId = getLastFocusedPointId(context) ?? allPoints[0]!.id;
     const lastPointIndex = allPoints.findIndex(
       (point) => point.id === lastPointId,
     );
@@ -164,13 +182,6 @@ export const store = createStore(initialContext, {
 
 const flattenPointsMemoed = memize(flattenPoints);
 
-function getLastFocusedPointId(
-  { focusedPointId, lastFocusedPointId }: AppContext,
-  fallbackId: string,
-) {
-  return focusedPointId !== null
-    ? focusedPointId
-    : lastFocusedPointId !== null
-      ? lastFocusedPointId
-      : fallbackId;
+function getLastFocusedPointId(context: AppContext) {
+  return context.focusedPointId ?? context.lastFocusedPointId;
 }

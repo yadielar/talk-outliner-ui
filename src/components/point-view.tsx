@@ -118,7 +118,7 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
   const mode = 'outline' as 'outline' | 'script';
 
   function togglePoint() {
-    store.send({ type: 'togglePointFocus', pointId: point.id });
+    store.send({ type: 'togglePointFocus', point });
   }
 
   return (

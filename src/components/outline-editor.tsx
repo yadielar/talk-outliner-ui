@@ -7,10 +7,28 @@ import { store } from '@/store';
 
 export function OutlineEditor() {
   const outlineDoc = useSelector(store, (state) => state.context.outlineDoc);
+  const focusedPointId = useSelector(
+    store,
+    (state) => state.context.focusedPointId,
+  );
 
   useEffect(() => {
     documentStorage.saveToLocalStorage(outlineDoc);
   }, [outlineDoc]);
+
+  useEffect(() => {
+    if (!focusedPointId) return;
+
+    const pointElement = document.getElementById(focusedPointId);
+    if (pointElement) {
+      setTimeout(() => {
+        pointElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 0);
+    }
+  }, [focusedPointId]);
 
   return (
     <div className="md:container lg:max-w-5xl px-4 pb-8 md:px-5">
