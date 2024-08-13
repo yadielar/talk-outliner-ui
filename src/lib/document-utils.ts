@@ -12,7 +12,7 @@ export function createOutlineDoc(): OutlineDoc {
   return {
     head: {
       title: '',
-      objective: '',
+      description: '',
     },
     body: {
       points: [createPoint()],
@@ -276,17 +276,17 @@ export function changeOutlineTitle(
 }
 
 /**
- * Changes the objective of the outline.
+ * Changes the description of the outline.
  */
-export function changeOutlineObjective(
+export function changeOutlineDescription(
   outlineDoc: OutlineDocParsed,
-  objective: string,
+  description: string,
 ): OutlineDocParsed {
   return {
     ...outlineDoc,
     head: {
       ...outlineDoc.head,
-      objective,
+      description,
     },
   };
 }

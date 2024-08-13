@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from '@xstate/store/react';
 import { documentStorage } from '@/lib/document-storage';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { PointEditor } from '@/components/point-editor';
 import { store } from '@/store';
 
@@ -41,13 +42,13 @@ export function OutlineEditor() {
             store.send({ type: 'changeOutlineTitle', title: e.target.value })
           }
         />
-        <Input
-          placeholder="Objective"
-          value={outlineDoc.head.objective}
+        <Textarea
+          placeholder="Description. Write your objective, song number, etc."
+          value={outlineDoc.head.description}
           onChange={(e) =>
             store.send({
-              type: 'changeOutlineObjective',
-              objective: e.target.value,
+              type: 'changeOutlineDescription',
+              description: e.target.value,
             })
           }
         />

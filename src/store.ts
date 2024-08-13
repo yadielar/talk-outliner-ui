@@ -3,7 +3,7 @@ import memize from 'memize';
 import { OutlineDocParsed, PointParsed } from '@/types';
 import {
   addNewPointAfter,
-  changeOutlineObjective,
+  changeOutlineDescription,
   changeOutlineTitle,
   createOutlineDoc,
   findPoint,
@@ -63,9 +63,12 @@ export const store = createStore(initialContext, {
       outlineDoc: changeOutlineTitle(context.outlineDoc, title),
     };
   },
-  changeOutlineObjective: (context, { objective }: { objective: string }) => {
+  changeOutlineDescription: (
+    context,
+    { description }: { description: string },
+  ) => {
     return {
-      outlineDoc: changeOutlineObjective(context.outlineDoc, objective),
+      outlineDoc: changeOutlineDescription(context.outlineDoc, description),
     };
   },
   updatePoint: (context, { point }: { point: PointParsed }) => {

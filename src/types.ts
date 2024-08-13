@@ -5,7 +5,7 @@ export interface OutlineDoc {
   parsed?: boolean;
   head: {
     title: string;
-    objective: string;
+    description: string;
   };
   body: {
     points: Point[];
