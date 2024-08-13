@@ -208,9 +208,8 @@ export function getGrandparentPosition(point: PointParsed) {
  * preceding sibling, the returned position will have a -1 at the end.
  */
 export function getPrecedingSiblingPosition(point: PointParsed) {
-  const position = [...point.position];
-  position[position.length - 1] -= 1;
-  return position;
+  const { position } = point;
+  return [...position.slice(0, -1), position[position.length - 1]! - 1];
 }
 
 /**
