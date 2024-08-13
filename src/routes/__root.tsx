@@ -16,6 +16,7 @@ import { ColorSchemeToggle } from '@/components/color-scheme-toggle';
 import { NavTabs, NavTabsLink } from '@/components/nav-tabs';
 import { Toaster } from '@/components/ui/sonner';
 import { PWABadge } from '@/components/pwa-badge';
+import { config } from '@/config';
 import { store } from '@/store';
 
 export const Route = createRootRoute({
@@ -137,6 +138,9 @@ function Root() {
       <Toaster />
       <PWABadge />
       <TanStackRouterDevtools />
+      <div className="pt-12 px-6 pb-6 text-xs text-muted-foreground text-right">
+        v{config.version}
+      </div>
     </ThemeProvider>
   );
 }
