@@ -1,4 +1,5 @@
 import { JSONContent } from '@tiptap/react';
+import { PointMovement, Voice, VoiceScope } from '@/enums';
 
 export interface OutlineDoc {
   parsed?: boolean;
@@ -23,24 +24,6 @@ export interface Point {
 }
 
 export type Content = string | JSONContent;
-
-export type PointMovement =
-  | 'move_up'
-  | 'move_down'
-  | 'indent_left'
-  | 'indent_right';
-
-export type Voice =
-  | 'none'
-  | 'info'
-  | 'question'
-  | 'reference'
-  | 'example'
-  | 'story'
-  | 'lesson'
-  | 'action';
-
-export type VoiceScope = 'node' | 'subtree';
 
 export interface OutlineDocParsed extends OutlineDoc {
   parsed: true;

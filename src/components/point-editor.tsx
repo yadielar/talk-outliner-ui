@@ -11,7 +11,8 @@ import {
   FileX2,
 } from 'lucide-react';
 import { cva } from 'class-variance-authority';
-import { Content, PointParsed, Voice, VoiceScope } from '@/types';
+import { Content, PointParsed } from '@/types';
+import { PointMovement, Voice, VoiceScope } from '@/enums';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -28,7 +29,7 @@ import { Separator } from '@/components/ui/separator';
 import { ContentEditor } from '@/components/content-editor';
 import { store } from '@/store';
 
-const voiceColor = cva('', {
+const voiceColor = cva<{ voice: Record<Voice, string> }>('', {
   variants: {
     voice: {
       none: '',
@@ -43,7 +44,7 @@ const voiceColor = cva('', {
   },
 });
 
-const voiceBg = cva('', {
+const voiceBg = cva<{ voice: Record<Voice, string> }>('', {
   variants: {
     voice: {
       none: '',
@@ -66,17 +67,17 @@ export const PointEditor = memo(function PointEditor({
   point,
 }: PointEditorProps) {
   const isFirstLevel = point.position.length === 1;
-  const { voice = 'none', voiceScope = 'subtree' } = point;
+  const { voice = Voice.None, voiceScope = VoiceScope.Subtree } = point;
 
   function move(point: PointParsed, direction: 'up' | 'down') {
     if (direction === 'up') {
-      if (!point.movement.includes('move_up')) {
+      if (!point.movement.includes(PointMovement.MoveUp)) {
         return;
       }
       store.send({ type: 'movePointUp', point });
     }
     if (direction === 'down') {
-      if (!point.movement.includes('move_down')) {
+      if (!point.movement.includes(PointMovement.MoveDown)) {
         return;
       }
       store.send({ type: 'movePointDown', point });
@@ -85,13 +86,13 @@ export const PointEditor = memo(function PointEditor({
 
   function indent(point: PointParsed, direction: 'left' | 'right') {
     if (direction === 'left') {
-      if (!point.movement.includes('indent_left')) {
+      if (!point.movement.includes(PointMovement.IndentLeft)) {
         return;
       }
       store.send({ type: 'indentPointLeft', point });
     }
     if (direction === 'right') {
-      if (!point.movement.includes('indent_right')) {
+      if (!point.movement.includes(PointMovement.IndentRight)) {
         return;
       }
       store.send({ type: 'indentPointRight', point });
@@ -139,7 +140,7 @@ export const PointEditor = memo(function PointEditor({
               variant="ghost"
               size="iconmini"
               onClick={() => move(point, 'up')}
-              disabled={!point.movement.includes('move_up')}
+              disabled={!point.movement.includes(PointMovement.MoveUp)}
             >
               <MoveUp className="h-4 w-4" />
             </Button>
@@ -147,7 +148,7 @@ export const PointEditor = memo(function PointEditor({
               variant="ghost"
               size="iconmini"
               onClick={() => move(point, 'down')}
-              disabled={!point.movement.includes('move_down')}
+              disabled={!point.movement.includes(PointMovement.MoveDown)}
             >
               <MoveDown className="h-4 w-4" />
             </Button>
@@ -155,7 +156,7 @@ export const PointEditor = memo(function PointEditor({
               variant="ghost"
               size="iconmini"
               onClick={() => indent(point, 'left')}
-              disabled={!point.movement.includes('indent_left')}
+              disabled={!point.movement.includes(PointMovement.IndentLeft)}
             >
               <IndentDecrease className="h-4 w-4" />
             </Button>
@@ -163,7 +164,7 @@ export const PointEditor = memo(function PointEditor({
               variant="ghost"
               size="iconmini"
               onClick={() => indent(point, 'right')}
-              disabled={!point.movement.includes('indent_right')}
+              disabled={!point.movement.includes(PointMovement.IndentRight)}
             >
               <IndentIncrease className="h-4 w-4" />
             </Button>
@@ -199,50 +200,50 @@ export const PointEditor = memo(function PointEditor({
                   onValueChange={(value) => changeVoice(point, value as Voice)}
                 >
                   <DropdownMenuRadioItem
-                    value="none"
-                    className={voiceColor({ voice: 'none' })}
+                    value={Voice.None}
+                    className={voiceColor({ voice: Voice.None })}
                   >
                     None
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem
-                    value="info"
-                    className={voiceColor({ voice: 'info' })}
+                    value={Voice.Info}
+                    className={voiceColor({ voice: Voice.Info })}
                   >
                     Info
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem
-                    value="question"
-                    className={voiceColor({ voice: 'question' })}
+                    value={Voice.Question}
+                    className={voiceColor({ voice: Voice.Question })}
                   >
                     Question
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem
-                    value="reference"
-                    className={voiceColor({ voice: 'reference' })}
+                    value={Voice.Reference}
+                    className={voiceColor({ voice: Voice.Reference })}
                   >
                     Reference
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem
-                    value="example"
-                    className={voiceColor({ voice: 'example' })}
+                    value={Voice.Example}
+                    className={voiceColor({ voice: Voice.Example })}
                   >
                     Example
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem
-                    value="story"
-                    className={voiceColor({ voice: 'story' })}
+                    value={Voice.Story}
+                    className={voiceColor({ voice: Voice.Story })}
                   >
                     Story
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem
-                    value="lesson"
-                    className={voiceColor({ voice: 'lesson' })}
+                    value={Voice.Lesson}
+                    className={voiceColor({ voice: Voice.Lesson })}
                   >
                     Lesson
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem
-                    value="action"
-                    className={voiceColor({ voice: 'action' })}
+                    value={Voice.Action}
+                    className={voiceColor({ voice: Voice.Action })}
                   >
                     Action
                   </DropdownMenuRadioItem>
@@ -254,10 +255,10 @@ export const PointEditor = memo(function PointEditor({
                     changeVoiceScope(point, value as VoiceScope)
                   }
                 >
-                  <DropdownMenuRadioItem value="subtree">
+                  <DropdownMenuRadioItem value={VoiceScope.Subtree}>
                     Apply to child points
                   </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="node">
+                  <DropdownMenuRadioItem value={VoiceScope.Node}>
                     Apply only to this point
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
@@ -284,10 +285,14 @@ export const PointEditor = memo(function PointEditor({
       </div>
 
       <div
-        className={cn(voiceScope === 'subtree' && ['p-2', voiceBg({ voice })])}
+        className={cn(
+          voiceScope === VoiceScope.Subtree && ['p-2', voiceBg({ voice })],
+        )}
       >
         <div
-          className={cn(voiceScope === 'node' && ['p-2', voiceBg({ voice })])}
+          className={cn(
+            voiceScope === VoiceScope.Node && ['p-2', voiceBg({ voice })],
+          )}
         >
           <ContentEditor
             key={point.id}

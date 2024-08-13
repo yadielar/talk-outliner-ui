@@ -1,4 +1,4 @@
-import { Voice as VoiceType } from '@/types';
+import { Voice as VoiceEnum } from '@/enums';
 import { Mark, mergeAttributes } from '@tiptap/react';
 
 export interface VoiceOptions {
@@ -11,11 +11,11 @@ declare module '@tiptap/react' {
       /**
        * Set a voice mark
        */
-      setVoice: (attributes?: { voice: VoiceType }) => ReturnType;
+      setVoice: (attributes?: { voice: VoiceEnum }) => ReturnType;
       /**
        * Toggle a voice mark
        */
-      toggleVoice: (attributes?: { voice: VoiceType }) => ReturnType;
+      toggleVoice: (attributes?: { voice: VoiceEnum }) => ReturnType;
       /**
        * Unset a voice mark
        */

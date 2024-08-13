@@ -1,10 +1,5 @@
-import {
-  OutlineDoc,
-  OutlineDocParsed,
-  Point,
-  PointMovement,
-  PointParsed,
-} from '@/types';
+import { OutlineDoc, OutlineDocParsed, Point, PointParsed } from '@/types';
+import { PointMovement } from '@/enums';
 import { createRandomString } from './string';
 
 // Utils for creating a document or point
@@ -124,16 +119,16 @@ function calculatePointMovement(
   const movement: PointMovement[] = [];
 
   if (index > 0) {
-    movement.push('move_up');
+    movement.push(PointMovement.MoveUp);
   }
   if (index < containingArray.length - 1) {
-    movement.push('move_down');
+    movement.push(PointMovement.MoveDown);
   }
   if (position.length > 1) {
-    movement.push('indent_left');
+    movement.push(PointMovement.IndentLeft);
   }
   if (position[position.length - 1]! > 0) {
-    movement.push('indent_right');
+    movement.push(PointMovement.IndentRight);
   }
 
   return movement;
@@ -345,7 +340,7 @@ export function movePointUp(
   point: PointParsed,
 ): OutlineDocParsed {
   // point cannot move up, return early
-  if (!point.movement.includes('move_up')) {
+  if (!point.movement.includes(PointMovement.MoveUp)) {
     return outlineDoc;
   }
 
@@ -368,7 +363,7 @@ export function movePointDown(
   point: PointParsed,
 ): OutlineDocParsed {
   // point cannot move down, return early
-  if (!point.movement.includes('move_down')) {
+  if (!point.movement.includes(PointMovement.MoveDown)) {
     return outlineDoc;
   }
 
@@ -391,7 +386,7 @@ export function indentPointRight(
   point: PointParsed,
 ): OutlineDocParsed {
   // point has no preceding sibling, return early
-  if (!point.movement.includes('indent_right')) {
+  if (!point.movement.includes(PointMovement.IndentRight)) {
     return outlineDoc;
   }
 
@@ -424,7 +419,7 @@ export function indentPointLeft(
   point: PointParsed,
 ): OutlineDocParsed {
   // point has no parent, return early
-  if (!point.movement.includes('indent_left')) {
+  if (!point.movement.includes(PointMovement.IndentLeft)) {
     return outlineDoc;
   }
 

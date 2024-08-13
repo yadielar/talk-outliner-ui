@@ -1,18 +1,10 @@
 import { z } from 'zod';
-import { OutlineDoc, Point } from './types';
+import { OutlineDoc, Point } from '@/types';
+import { Voice, VoiceScope } from '@/enums';
 
-export const VoiceSchema = z.enum([
-  'none',
-  'info',
-  'question',
-  'reference',
-  'example',
-  'story',
-  'lesson',
-  'action',
-]);
+export const VoiceSchema = z.nativeEnum(Voice);
 
-export const VoiceScopeSchema = z.enum(['node', 'subtree']);
+export const VoiceScopeSchema = z.nativeEnum(VoiceScope);
 
 export const PointSchema: z.ZodSchema<Point> = z.object({
   idea: z.string(),

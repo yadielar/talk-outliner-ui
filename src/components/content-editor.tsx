@@ -10,7 +10,9 @@ import {
   TextQuote,
 } from 'lucide-react';
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react';
-import { Content, Voice } from '@/types';
+import { Content } from '@/types';
+import { Voice } from '@/enums';
+import { voices } from '@/constants';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Separator } from '@/components/ui/separator';
@@ -80,17 +82,7 @@ export const ContentEditor = memo(function ContentEditor({
     .map(([key]) => key);
 
   const voiceGroupValue =
-    Object.entries({
-      question: editor?.isActive('voice', { voice: 'question' }),
-      info: editor?.isActive('voice', { voice: 'info' }),
-      reference: editor?.isActive('voice', { voice: 'reference' }),
-      example: editor?.isActive('voice', { voice: 'example' }),
-      story: editor?.isActive('voice', { voice: 'story' }),
-      lesson: editor?.isActive('voice', { voice: 'lesson' }),
-      action: editor?.isActive('voice', { voice: 'action' }),
-    })
-      .filter(([, isActive]) => isActive)
-      .map(([key]) => key)[0] ?? 'none';
+    voices.find((voice) => editor?.isActive('voice', { voice })) ?? Voice.None;
 
   function toggleVoice(voice: Voice) {
     editor?.chain().focus().toggleVoice({ voice }).run();
@@ -170,9 +162,9 @@ export const ContentEditor = memo(function ContentEditor({
 
               <ToggleGroup type="single" value={voiceGroupValue}>
                 <ToggleGroupItem
-                  value="info"
+                  value={Voice.Info}
                   aria-label="Toggle info voice"
-                  onClick={() => toggleVoice('info')}
+                  onClick={() => toggleVoice(Voice.Info)}
                 >
                   <Circle
                     className="h-4 w-4 fill-info-foreground"
@@ -180,9 +172,9 @@ export const ContentEditor = memo(function ContentEditor({
                   />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                  value="question"
+                  value={Voice.Question}
                   aria-label="Toggle question voice"
-                  onClick={() => toggleVoice('question')}
+                  onClick={() => toggleVoice(Voice.Question)}
                 >
                   <Circle
                     className="h-4 w-4 fill-question-foreground"
@@ -190,16 +182,16 @@ export const ContentEditor = memo(function ContentEditor({
                   />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                  value="reference"
+                  value={Voice.Reference}
                   aria-label="Toggle reference voice"
-                  onClick={() => toggleVoice('reference')}
+                  onClick={() => toggleVoice(Voice.Reference)}
                 >
                   <Circle className="h-4 w-4 fill-quote" strokeWidth={0} />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                  value="example"
+                  value={Voice.Example}
                   aria-label="Toggle example voice"
-                  onClick={() => toggleVoice('example')}
+                  onClick={() => toggleVoice(Voice.Example)}
                 >
                   <Circle
                     className="h-4 w-4 fill-example-foreground"
@@ -207,9 +199,9 @@ export const ContentEditor = memo(function ContentEditor({
                   />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                  value="story"
+                  value={Voice.Story}
                   aria-label="Toggle story voice"
-                  onClick={() => toggleVoice('story')}
+                  onClick={() => toggleVoice(Voice.Story)}
                 >
                   <Circle
                     className="h-4 w-4 fill-story-foreground"
@@ -217,9 +209,9 @@ export const ContentEditor = memo(function ContentEditor({
                   />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                  value="lesson"
+                  value={Voice.Lesson}
                   aria-label="Toggle lesson voice"
-                  onClick={() => toggleVoice('lesson')}
+                  onClick={() => toggleVoice(Voice.Lesson)}
                 >
                   <Circle
                     className="h-4 w-4 fill-lesson-foreground"
@@ -227,9 +219,9 @@ export const ContentEditor = memo(function ContentEditor({
                   />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                  value="action"
+                  value={Voice.Action}
                   aria-label="Toggle action voice"
-                  onClick={() => toggleVoice('action')}
+                  onClick={() => toggleVoice(Voice.Action)}
                 >
                   <Circle
                     className="h-4 w-4 fill-action-foreground"
