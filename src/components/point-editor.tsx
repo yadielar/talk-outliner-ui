@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import React, { forwardRef, memo, useState } from 'react';
 import {
   ChevronsDownUp,
   File,
@@ -38,6 +38,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
 import { Separator } from '@/components/ui/separator';
 import { ContentEditor } from '@/components/content-editor';
 import { ContentRenderer } from '@/components/content-renderer';
@@ -207,75 +213,65 @@ export const PointEditor = memo(function PointEditor({
           <ScrollArea className="flex-1" type="scroll">
             <div className="flex items-center w-max space-x-2 pr-2">
               {isFirstLevel && (
-                <Button
-                  variant="ghost"
-                  size="iconmini"
+                <ToolbarButton
+                  tooltip="Collapse"
                   onClick={unfocusPoint}
                   disabled={!expanded}
                 >
                   <ChevronsDownUp className="h-4 w-4" />
-                </Button>
+                </ToolbarButton>
               )}
-              <Button
-                variant="ghost"
-                size="iconmini"
+              <ToolbarButton
+                tooltip="Move up"
                 onClick={() => move(point, 'up')}
                 disabled={!point.movement.includes(PointMovement.MoveUp)}
               >
                 <MoveUp className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="iconmini"
+              </ToolbarButton>
+              <ToolbarButton
+                tooltip="Move down"
                 onClick={() => move(point, 'down')}
                 disabled={!point.movement.includes(PointMovement.MoveDown)}
               >
                 <MoveDown className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="iconmini"
+              </ToolbarButton>
+              <ToolbarButton
+                tooltip="Indent left"
                 onClick={() => indent(point, 'left')}
                 disabled={!point.movement.includes(PointMovement.IndentLeft)}
               >
                 <IndentDecrease className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="iconmini"
+              </ToolbarButton>
+              <ToolbarButton
+                tooltip="Indent right"
                 onClick={() => indent(point, 'right')}
                 disabled={!point.movement.includes(PointMovement.IndentRight)}
               >
                 <IndentIncrease className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="iconmini"
-                onClick={() => {
-                  if (
-                    typeof point.script === 'string' &&
-                    !point.scriptRemoved
-                  ) {
-                    removeScript(point);
-                  } else {
-                    addScript(point);
-                  }
-                }}
-              >
-                {typeof point.script === 'string' && !point.scriptRemoved ? (
+              </ToolbarButton>
+              {typeof point.script === 'string' && !point.scriptRemoved ? (
+                <ToolbarButton
+                  tooltip="Remove script"
+                  onClick={() => removeScript(point)}
+                >
                   <FileX2 className="h-4 w-4" />
-                ) : (
+                </ToolbarButton>
+              ) : (
+                <ToolbarButton
+                  tooltip="Add script"
+                  onClick={() => addScript(point)}
+                >
                   <File className="h-4 w-4" />
-                )}
-              </Button>
+                </ToolbarButton>
+              )}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="iconmini">
+                  <ToolbarButton tooltip="Change voice">
                     <MicVocal
                       className={cn('h-4 w-4', voiceColor({ voice }))}
                     />
-                  </Button>
+                  </ToolbarButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-52">
                   <DropdownMenuLabel>Voice</DropdownMenuLabel>
@@ -358,20 +354,18 @@ export const PointEditor = memo(function PointEditor({
           <Separator orientation="vertical" className="h-6 bg-foreground/10" />
 
           <div className="flex-none flex items-center space-x-2 pl-2">
-            <Button
-              variant="ghost"
-              size="iconmini"
+            <ToolbarButton
+              tooltip="Remove point"
               onClick={() => confirmRemove(point)}
             >
               <Trash className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="iconmini"
+            </ToolbarButton>
+            <ToolbarButton
+              tooltip="Add point after"
               onClick={() => addAfter(point)}
             >
               <Plus className="h-4 w-4" />
-            </Button>
+            </ToolbarButton>
           </div>
         </div>
       )}
@@ -451,3 +445,20 @@ export const PointEditor = memo(function PointEditor({
     </div>
   );
 });
+
+const ToolbarButton = forwardRef<
+  React.ElementRef<typeof Button>,
+  React.ComponentPropsWithoutRef<typeof Button> & {
+    tooltip: string;
+  }
+>(({ tooltip, ...props }, ref) => {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="ghost" size="iconmini" ref={ref} {...props} />
+      </TooltipTrigger>
+      <TooltipContent>{tooltip}</TooltipContent>
+    </Tooltip>
+  );
+});
+ToolbarButton.displayName = 'ToolbarButton';
