@@ -3,8 +3,33 @@
   <head>
     <meta charset="UTF-8" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Talk Outliner - Create dynamic talk outlines.</title>
+
+    <!-- viewport for mobile devices -->
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <!-- theme properties -->
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="hsl(0 0% 100%)"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="hsl(222.2 84% 4.9%)"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <!-- ios specific -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- head code injected by vite below -->
   </head>
   <body>
     <div id="root"></div>

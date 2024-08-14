@@ -19,8 +19,8 @@ export default defineConfig({
       },
 
       manifest: {
-        name: 'talk-outliner-ui',
-        short_name: 'talk-outliner-ui',
+        name: 'Talk Outliner',
+        short_name: 'Talk Outliner',
         description: 'Create dynamic talk outlines.',
         theme_color: '#ffffff',
       },
