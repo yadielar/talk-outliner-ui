@@ -14,8 +14,8 @@ import { Button } from '@/components/ui/button';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ColorSchemeToggle } from '@/components/color-scheme-toggle';
 import { NavTabs, NavTabsLink } from '@/components/nav-tabs';
+import { RegisterServiceWorker } from '@/components/register-service-worker';
 import { Toaster } from '@/components/ui/sonner';
-import { useReloadPrompt } from '@/components/use-reload-prompt';
 import { config } from '@/config';
 import { store } from '@/store';
 
@@ -26,8 +26,6 @@ export const Route = createRootRoute({
 function Root() {
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
-
-  useReloadPrompt();
 
   const hasActiveFile = useSelector(store, (state) =>
     Boolean(state.context.fileHandle),
@@ -140,10 +138,11 @@ function Root() {
           </div>
           <Outlet />
         </div>
-        <div className="flex-none pt-12 px-6 pb-6 text-xs text-muted-foreground text-right">
+        <div className="flex-none pt-12 px-6 pb-6 text-xs text-muted-foreground text-left">
           v{config.version}
         </div>
       </div>
+      <RegisterServiceWorker />
       <Toaster />
       <Suspense>
         <TanStackRouterDevtools />
