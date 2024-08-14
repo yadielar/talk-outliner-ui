@@ -8,6 +8,9 @@ import {
   createOutlineDoc,
   findPoint,
   flattenPoints,
+  getParentPosition,
+  getPrecedingSiblingPosition,
+  getSucceedingSiblingPosition,
   indentPointLeft,
   indentPointRight,
   movePointDown,
@@ -100,7 +103,7 @@ export const store = createStore(initialContext, {
   },
   addNewPointAfter: (context, { point }: { point: PointParsed }) => {
     const newOutlineDoc = addNewPointAfter(context.outlineDoc, point);
-    const newPointPosition = point.position[point.position.length - 1]! + 1;
+    const newPointPosition = getSucceedingSiblingPosition(point);
     const newPoint = findPoint(newOutlineDoc.body.points, (point) => {
       return point.position.toString() === newPointPosition.toString();
     });
@@ -111,8 +114,27 @@ export const store = createStore(initialContext, {
     };
   },
   removePoint: (context, { point }: { point: PointParsed }) => {
+    const newOutlineDoc = removePoint(context.outlineDoc, point);
+    let newFocusedPoint = findPoint(newOutlineDoc.body.points, (p) => {
+      return p.position.toString() === point.position.toString();
+    });
+    if (!newFocusedPoint) {
+      newFocusedPoint = findPoint(newOutlineDoc.body.points, (p) => {
+        return (
+          p.position.toString() ===
+          getPrecedingSiblingPosition(point).toString()
+        );
+      });
+    }
+    if (!newFocusedPoint) {
+      newFocusedPoint = findPoint(newOutlineDoc.body.points, (p) => {
+        return p.position.toString() === getParentPosition(point).toString();
+      });
+    }
     return {
-      outlineDoc: removePoint(context.outlineDoc, point),
+      outlineDoc: newOutlineDoc,
+      focusedPointId: newFocusedPoint?.id ?? null,
+      lastFocusedPointId: newFocusedPoint?.id ?? null,
     };
   },
   focusPoint: (context, { point }: { point: PointParsed }) => {

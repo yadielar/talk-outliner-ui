@@ -204,12 +204,21 @@ export function getGrandparentPosition(point: PointParsed) {
 }
 
 /**
- * Gets the position of the preceding sibling of a point. If there is no
- * preceding sibling, the returned position will have a -1 at the end.
+ * Gets the position of the preceding sibling of a point. If the point is
+ * already the first one, the returned position will have a -1 at the end.
  */
 export function getPrecedingSiblingPosition(point: PointParsed) {
   const { position } = point;
   return [...position.slice(0, -1), position[position.length - 1]! - 1];
+}
+
+/**
+ * Gets the position of the succeeding sibling of a point. This function
+ * doesn't check if a point actually exists at the returned position.
+ */
+export function getSucceedingSiblingPosition(point: PointParsed) {
+  const { position } = point;
+  return [...position.slice(0, -1), position[position.length - 1]! + 1];
 }
 
 /**
