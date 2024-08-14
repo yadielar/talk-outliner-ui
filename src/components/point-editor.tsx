@@ -206,12 +206,9 @@ export const PointEditor = memo(function PointEditor({
       )}
     >
       {expanded && (
-        <div
-          data-name="toolbar"
-          className="flex justify-between items-center mb-1"
-        >
+        <div data-name="toolbar" className="flex justify-between items-center">
           <ScrollArea className="flex-1" type="scroll">
-            <div className="flex items-center w-max space-x-2 pr-2">
+            <div className="flex items-center w-max space-x-2 p-1 pr-2">
               {isFirstLevel && (
                 <ToolbarButton
                   tooltip="Collapse"
