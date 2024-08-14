@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
+import { toast } from 'sonner';
+import { useEffectEvent } from '@/lib/react.ts';
 
-export function PWABadge() {
+export function useReloadPrompt() {
   // check for updates every hour
   const period = 60 * 60 * 1000;
 
@@ -22,45 +25,37 @@ export function PWABadge() {
     },
   });
 
-  function close() {
+  const onUpdateServiceWorker = useEffectEvent(updateServiceWorker);
+  const onClose = useEffectEvent(() => {
     setOfflineReady(false);
     setNeedRefresh(false);
-  }
+  });
 
-  // TODO: Refactor classnames to use Tailwind
-  return (
-    <div role="alert" aria-labelledby="toast-message">
-      {(offlineReady || needRefresh) && (
-        <div className="position-fixed right-0 bottom-0 m-4 p-3 border border-gray-300 rounded z-10 text-left shadow-md bg-white">
-          <div className="mb-2">
-            {offlineReady ? (
-              <span id="toast-message">App ready to work offline</span>
-            ) : (
-              <span id="toast-message">
-                New content available, click on reload button to update.
-              </span>
-            )}
-          </div>
-          <div>
-            {needRefresh && (
-              <button
-                className="border border-gray-500 rounded px-2 py-1 mr-2"
-                onClick={() => updateServiceWorker(true)}
-              >
-                Reload
-              </button>
-            )}
-            <button
-              className="border border-gray-500 rounded px-2 py-1 mr-2"
-              onClick={() => close()}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  useEffect(() => {
+    // dismiss any existing toast
+    toast.dismiss();
+
+    if (offlineReady) {
+      toast(
+        offlineReady
+          ? 'App ready to work offline'
+          : 'New content available, click on reload button to update.',
+        {
+          cancel: {
+            label: 'Close',
+            onClick: () => onClose(),
+          },
+          action: needRefresh
+            ? {
+                label: 'Reload',
+                onClick: () => onUpdateServiceWorker(true),
+              }
+            : undefined,
+          duration: Infinity,
+        },
+      );
+    }
+  }, [offlineReady, needRefresh, onUpdateServiceWorker, onClose]);
 }
 
 /**

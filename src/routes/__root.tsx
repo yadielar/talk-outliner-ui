@@ -15,7 +15,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ColorSchemeToggle } from '@/components/color-scheme-toggle';
 import { NavTabs, NavTabsLink } from '@/components/nav-tabs';
 import { Toaster } from '@/components/ui/sonner';
-import { PWABadge } from '@/components/pwa-badge';
+import { useReloadPrompt } from '@/components/use-reload-prompt';
 import { config } from '@/config';
 import { store } from '@/store';
 
@@ -26,6 +26,8 @@ export const Route = createRootRoute({
 function Root() {
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
+
+  useReloadPrompt();
 
   const hasActiveFile = useSelector(store, (state) =>
     Boolean(state.context.fileHandle),
@@ -136,7 +138,6 @@ function Root() {
       </div>
       <Outlet />
       <Toaster />
-      <PWABadge />
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
