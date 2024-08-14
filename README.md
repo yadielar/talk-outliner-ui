@@ -18,3 +18,29 @@ A tool specifically created for outlining a talk.
 
 - Dedicated view mode for practicing and presenting.
 - Toggle each point to display a script for more details.
+
+## Keyboard Shortcuts
+
+### Any mode
+
+- <kbd>cmd</kbd> + <kbd>o</kbd> : Open from file
+- <kbd>cmd</kbd> + <kbd>s</kbd> : Save to file
+- <kbd>cmd</kbd> + <kbd>o</kbd> : Switch between edit and view modes
+
+### View mode only
+
+- <kbd>right</kbd>, <kbd>down</kbd>, or <kbd>space</kbd> : Focus and expand next
+  point
+- <kbd>left</kbd>, <kbd>up</kbd>, or <kbd>shift+space</kbd> : Focus and expand
+  previous point
+
+## Tips
+
+- On Chrome desktop, after the first save to a file, saving again automatically
+  writes to the file without showing the prompt. This resets after a reload
+  though.
+- Importing and saving from/to cloud storage providers like iCloud or Google
+  Drive is super easy. Store the outlines in the cloud and easily edit them on
+  the go.
+- The focused point is remembered between views and the app scrolls
+  automatically to it. This helps with quick edits while practicing.
