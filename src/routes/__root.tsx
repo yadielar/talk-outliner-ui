@@ -117,33 +117,37 @@ function Root() {
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <div className="flex space-x-2 p-3">
-        <div className="flex-none md:min-w-40 flex justify-start items-center space-x-2">
-          <Button variant="outline" size="xs" onClick={handleOpen}>
-            Open
-          </Button>
-          <Button variant="outline" size="xs" onClick={handleSave}>
-            {!hasActiveFile ? 'Save to...' : 'Save'}
-          </Button>
+      <div className="h-full flex flex-col overflow-y-auto">
+        <div className="flex-1">
+          <div className="flex-none flex space-x-2 p-3">
+            <div className="flex-none md:min-w-40 flex justify-start items-center space-x-2">
+              <Button variant="outline" size="xs" onClick={handleOpen}>
+                Open
+              </Button>
+              <Button variant="outline" size="xs" onClick={handleSave}>
+                {!hasActiveFile ? 'Save to...' : 'Save'}
+              </Button>
+            </div>
+            <div className="flex-1 flex justify-end md:justify-center items-center">
+              <NavTabs className="grid grid-cols-2">
+                <NavTabsLink to="/edit">Edit</NavTabsLink>
+                <NavTabsLink to="/view">View</NavTabsLink>
+              </NavTabs>
+            </div>
+            <div className="flex-none md:min-w-40 flex justify-end items-center">
+              <ColorSchemeToggle />
+            </div>
+          </div>
+          <Outlet />
         </div>
-        <div className="flex-1 flex justify-end md:justify-center items-center">
-          <NavTabs className="grid grid-cols-2">
-            <NavTabsLink to="/edit">Edit</NavTabsLink>
-            <NavTabsLink to="/view">View</NavTabsLink>
-          </NavTabs>
-        </div>
-        <div className="flex-none md:min-w-40 flex justify-end items-center">
-          <ColorSchemeToggle />
+        <div className="flex-none pt-12 px-6 pb-6 text-xs text-muted-foreground text-right">
+          v{config.version}
         </div>
       </div>
-      <Outlet />
       <Toaster />
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
-      <div className="pt-12 px-6 pb-6 text-xs text-muted-foreground text-right">
-        v{config.version}
-      </div>
     </ThemeProvider>
   );
 }

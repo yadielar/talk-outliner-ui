@@ -32,7 +32,7 @@ export function OutlineEditor() {
   }, [focusedPointId]);
 
   return (
-    <div className="md:container min-h-[82vh] lg:max-w-5xl px-4 pb-8 md:px-5">
+    <div className="md:container lg:max-w-5xl px-4 pb-8 md:px-5">
       <div className="space-y-4 my-4">
         <Input
           className="text-2xl font-bold"
