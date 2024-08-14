@@ -398,8 +398,12 @@ export const PointEditor = memo(function PointEditor({
                 onChange={(value) => changeIdea(point, value)}
                 placeholder="Write your idea here..."
               />
-            ) : (
+            ) : point.idea.length > 0 ? (
               <ContentRenderer value={point.idea} />
+            ) : (
+              <div className="text-sm italic text-muted-foreground/50 p-2">
+                Empty point
+              </div>
             )}
           </div>
 

@@ -25,12 +25,14 @@ type AppContext = {
   lastFocusedPointId: string | null;
 };
 
+const initialOutlineDoc = parseOutlineDoc(
+  documentStorage.loadFromLocalStorage() ?? createOutlineDoc(),
+);
+
 const initialContext: AppContext = {
-  outlineDoc: parseOutlineDoc(
-    documentStorage.loadFromLocalStorage() ?? createOutlineDoc(),
-  ),
+  outlineDoc: initialOutlineDoc,
   fileHandle: undefined,
-  focusedPointId: null,
+  focusedPointId: initialOutlineDoc.body.points[0]!.id,
   lastFocusedPointId: null,
 };
 

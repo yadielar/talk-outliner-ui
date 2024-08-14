@@ -147,7 +147,13 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
           )}
         >
           <div className="flex justify-between items-end">
-            <ContentRenderer className="flex-1" value={point.idea} />
+            {point.idea.length > 0 ? (
+              <ContentRenderer className="flex-1" value={point.idea} />
+            ) : (
+              <div className="flex-1 text-sm italic text-muted-foreground/50 p-2">
+                Empty point
+              </div>
+            )}
             {!expanded &&
               typeof point.script === 'string' &&
               !point.scriptRemoved && (
