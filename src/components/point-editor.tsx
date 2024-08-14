@@ -86,6 +86,8 @@ interface PointEditorProps {
 export const PointEditor = memo(function PointEditor({
   point,
 }: PointEditorProps) {
+  const isFirstLevel = point.position.length === 1;
+
   const expanded = useSelector(store, (state) => {
     const { outlineDoc, focusedPointId } = state.context;
     if (!focusedPointId) return false;
@@ -96,8 +98,13 @@ export const PointEditor = memo(function PointEditor({
     if (!focusedPoint) return false;
     return focusedPoint.position[0] === point.position[0];
   });
+
+  const isLastRemaining = useSelector(store, (state) => {
+    const { outlineDoc } = state.context;
+    return isFirstLevel && outlineDoc.body.points.length === 1;
+  });
+
   const [alertDelete, setAlertDelete] = useState(false);
-  const isFirstLevel = point.position.length === 1;
   const { voice = Voice.None, voiceScope = VoiceScope.Subtree } = point;
 
   function focusPoint(point: PointParsed) {
@@ -354,6 +361,7 @@ export const PointEditor = memo(function PointEditor({
             <ToolbarButton
               tooltip="Remove point"
               onClick={() => confirmRemove(point)}
+              disabled={isLastRemaining}
             >
               <Trash className="h-4 w-4" />
             </ToolbarButton>

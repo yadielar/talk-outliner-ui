@@ -1,11 +1,13 @@
 import { createStore } from '@xstate/store';
 import memize from 'memize';
-import { OutlineDocParsed, PointParsed } from '@/types';
+import { OutlineDoc, OutlineDocParsed, PointParsed } from '@/types';
+import { OutlineDocSchema } from '@/schemas';
 import {
   addNewPointAfter,
   changeOutlineDescription,
   changeOutlineTitle,
   createOutlineDoc,
+  createPoint,
   findPoint,
   flattenPoints,
   getParentPosition,
@@ -28,16 +30,7 @@ type AppContext = {
   lastFocusedPointId: string | null;
 };
 
-const initialOutlineDoc = parseOutlineDoc(
-  documentStorage.loadFromLocalStorage() ?? createOutlineDoc(),
-);
-
-const initialContext: AppContext = {
-  outlineDoc: initialOutlineDoc,
-  fileHandle: undefined,
-  focusedPointId: initialOutlineDoc.body.points[0]!.id,
-  lastFocusedPointId: null,
-};
+const initialContext: AppContext = getInitialContext();
 
 export const store = createStore(initialContext, {
   loadOutlineDocFromFile: (
@@ -208,6 +201,37 @@ export const store = createStore(initialContext, {
 // =============================================================================
 
 const flattenPointsMemoed = memize(flattenPoints);
+
+function getInitialContext(): AppContext {
+  const storedDoc = documentStorage.loadFromLocalStorage();
+  let unparsedDoc: OutlineDoc;
+
+  if (storedDoc) {
+    const result = OutlineDocSchema.safeParse(storedDoc);
+    unparsedDoc = result.success ? result.data : createOutlineDoc();
+  } else {
+    unparsedDoc = createOutlineDoc();
+  }
+
+  if (unparsedDoc.body.points.length === 0) {
+    unparsedDoc = {
+      ...unparsedDoc,
+      body: {
+        ...unparsedDoc.body,
+        points: [createPoint()],
+      },
+    };
+  }
+
+  const doc = parseOutlineDoc(unparsedDoc);
+
+  return {
+    outlineDoc: doc,
+    fileHandle: undefined,
+    focusedPointId: doc.body.points[0] ? doc.body.points[0].id : null,
+    lastFocusedPointId: null,
+  };
+}
 
 function getLastFocusedPointId(context: AppContext) {
   return context.focusedPointId ?? context.lastFocusedPointId;
