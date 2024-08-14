@@ -1,10 +1,10 @@
+import React, { Suspense } from 'react';
 import {
   createRootRoute,
   Outlet,
   useMatchRoute,
   useNavigate,
 } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { useSelector } from '@xstate/store/react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { toast } from 'sonner';
@@ -137,10 +137,22 @@ function Root() {
       <Outlet />
       <Toaster />
       <PWABadge />
-      <TanStackRouterDevtools />
+      <Suspense>
+        <TanStackRouterDevtools />
+      </Suspense>
       <div className="pt-12 px-6 pb-6 text-xs text-muted-foreground text-right">
         v{config.version}
       </div>
     </ThemeProvider>
   );
 }
+
+// Devtools
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === 'production'
+    ? () => null
+    : React.lazy(() =>
+        import('@tanstack/router-devtools').then((res) => ({
+          default: res.TanStackRouterDevtools,
+        })),
+      );
