@@ -25,7 +25,6 @@ export const useEffectEvent = <A extends any[], R>(fn: Fn<A, R>): Fn<A, R> => {
         const { current } = ref;
         return current(...args);
       },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 };
