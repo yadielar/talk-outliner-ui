@@ -1,4 +1,5 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
+import { FilePlus, FolderOpen, Save } from 'lucide-react';
 import {
   createRootRoute,
   Outlet,
@@ -10,6 +11,16 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { toast } from 'sonner';
 import { documentStorage } from '@/lib/document-storage';
 import { parseOutlineDoc } from '@/lib/document-utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -27,6 +38,7 @@ export const Route = createRootRoute({
 function Root() {
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
+  const [alertDelete, setAlertDelete] = useState(false);
 
   const hasActiveFile = useSelector(store, (state) =>
     Boolean(state.context.fileHandle),
@@ -36,7 +48,7 @@ function Root() {
     'mod+o',
     (e) => {
       e.preventDefault();
-      handleOpen();
+      open();
     },
     { enableOnFormTags: true, enableOnContentEditable: true },
   );
@@ -45,7 +57,7 @@ function Root() {
     'mod+s',
     (e) => {
       e.preventDefault();
-      handleSave();
+      save();
     },
     { enableOnFormTags: true, enableOnContentEditable: true },
   );
@@ -69,7 +81,16 @@ function Root() {
     { enableOnFormTags: true, enableOnContentEditable: true },
   );
 
-  async function handleOpen() {
+  function confirmCreate() {
+    setAlertDelete(true);
+  }
+
+  function create() {
+    store.send({ type: 'createNewOutlineDoc' });
+    navigate({ to: '/edit' });
+  }
+
+  async function open() {
     const result = await documentStorage.loadFromFile();
 
     if (result.outlineDoc) {
@@ -90,7 +111,7 @@ function Root() {
     }
   }
 
-  async function handleSave() {
+  async function save() {
     const state = store.getSnapshot();
 
     const result = await documentStorage.saveToFile(
@@ -122,11 +143,29 @@ function Root() {
         <div className="h-full flex flex-col overflow-y-auto">
           <div className="flex-1">
             <div className="flex-none flex space-x-2 p-3">
-              <div className="flex-none md:min-w-40 flex justify-start items-center space-x-2">
-                <Button variant="outline" size="xs" onClick={handleOpen}>
+              <div className="flex-none md:hidden md:min-w-40 flex justify-start items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="iconmini"
+                  onClick={confirmCreate}
+                >
+                  <FilePlus className="h-[1.2rem] w-[1.2rem]" />
+                </Button>
+                <Button variant="outline" size="iconmini" onClick={open}>
+                  <FolderOpen className="h-[1.2rem] w-[1.2rem]" />
+                </Button>
+                <Button variant="outline" size="iconmini" onClick={save}>
+                  <Save className="h-[1.2rem] w-[1.2rem]" />
+                </Button>
+              </div>
+              <div className="flex-none hidden md:min-w-40 md:flex justify-start items-center space-x-2">
+                <Button variant="outline" size="xs" onClick={confirmCreate}>
+                  New
+                </Button>
+                <Button variant="outline" size="xs" onClick={open}>
                   Open
                 </Button>
-                <Button variant="outline" size="xs" onClick={handleSave}>
+                <Button variant="outline" size="xs" onClick={save}>
                   {!hasActiveFile ? 'Save to...' : 'Save'}
                 </Button>
               </div>
@@ -141,6 +180,23 @@ function Root() {
               </div>
             </div>
             <Outlet />
+            <AlertDialog open={alertDelete} onOpenChange={setAlertDelete}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Creating a new outline will remove the current one. If you
+                    have unsaved changes, make sure to save them first.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => create()}>
+                    Discard & create
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
           <div className="flex-none pt-12 px-6 pb-6 text-xs text-muted-foreground text-left">
             v{config.version}

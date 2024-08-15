@@ -33,6 +33,14 @@ type AppContext = {
 const initialContext: AppContext = getInitialContext();
 
 export const store = createStore(initialContext, {
+  createNewOutlineDoc: () => {
+    return {
+      outlineDoc: parseOutlineDoc(createOutlineDoc()),
+      fileHandle: undefined,
+      focusedPointId: null,
+      lastFocusedPointId: null,
+    };
+  },
   loadOutlineDocFromFile: (
     context,
     {
