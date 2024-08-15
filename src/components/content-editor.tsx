@@ -36,6 +36,7 @@ export const ContentEditor = memo(function ContentEditor({
   const editor = useEditor({
     extensions,
     content: initialValue || '',
+    autofocus: 'end',
     editorProps: {
       attributes: {
         class: 'Content',
