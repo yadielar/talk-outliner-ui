@@ -40,7 +40,7 @@ const container = cva<{ voice: Record<Voice, string> }>('relative', {
 const line = cva<{
   voice: Record<Voice, string>;
   active: Record<'true' | 'false', string>;
-}>('p-3 mb-2 cursor-pointer hover:bg-[--voice-bg-active,hsl(var(--accent))]', {
+}>('p-3 mb-2 cursor-pointer hover:bg-[--voice-bg-active,hsl(var(--neutral))]', {
   variants: {
     voice: {
       none: '',
@@ -62,7 +62,7 @@ const line = cva<{
       voice: Voice.None,
       active: true,
       className:
-        'bg-[--voice-bg-active,hsl(var(--accent))] hover:bg-[--voice-bg-active,hsl(var(--accent))]',
+        'bg-[--voice-bg-active,hsl(var(--neutral))] hover:bg-[--voice-bg-active,hsl(var(--neutral))]',
     },
     {
       voice: Voice.Info,
@@ -142,8 +142,9 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
         <div
           data-name="idea"
           className={cn(
-            expanded && 'underline',
-            (expanded || mode === 'script') && 'opacity-25',
+            expanded &&
+              'underline underline-offset-4 decoration-foreground/50 decoration-1 decoration-dashed',
+            (expanded || mode === 'script') && 'opacity-75',
           )}
         >
           <div className="flex justify-between items-end">
