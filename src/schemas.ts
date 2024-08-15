@@ -15,6 +15,7 @@ export const PointSchema: z.ZodSchema<Point> = z.object({
 });
 
 export const OutlineDocSchema: z.ZodSchema<OutlineDoc> = z.object({
+  name: z.string(),
   head: z.object({
     title: z.string(),
     description: z.string(),

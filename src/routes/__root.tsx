@@ -110,7 +110,9 @@ function Root() {
         fileHandle: fileHandle ?? undefined,
       });
     } else {
-      toast.error('Error saving file.');
+      if (result.error === 'error') {
+        toast.error('Error saving file.');
+      }
     }
   }
 

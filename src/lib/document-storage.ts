@@ -71,7 +71,14 @@ async function loadFromFile(): Promise<LoadFileResult> {
 
     const doc = OutlineDocSchema.parse(parsedJson);
 
-    return { outlineDoc: doc, fileHandle: file.handle, error: null };
+    return {
+      outlineDoc: {
+        ...doc,
+        name: file.name.replace(/\.json$/, '') || doc.name || '',
+      },
+      fileHandle: file.handle,
+      error: null,
+    };
   } catch (error) {
     let errorType: LoadFileErrorType;
 
@@ -99,8 +106,10 @@ type SaveFileResult =
   | {
       success: false;
       fileHandle: null;
-      error: any;
+      error: SaveFileErrorType;
     };
+
+type SaveFileErrorType = 'abort' | 'error';
 
 async function saveToFile(
   doc: OutlineDoc | OutlineDocParsed,
@@ -115,7 +124,7 @@ async function saveToFile(
     const result = await fileSave(
       blob,
       {
-        fileName: `${cleanDoc.head.title || 'outline'}.json`,
+        fileName: `${cleanDoc.name || cleanDoc.head.title || 'outline'}.json`,
         extensions: ['.json'],
       },
       fileHandle,
@@ -123,7 +132,16 @@ async function saveToFile(
     console.log('Saved file', result);
     return { success: true, fileHandle: result, error: null };
   } catch (error) {
-    console.error('Failed to save file:', error);
-    return { success: false, fileHandle: null, error };
+    let errorType: LoadFileErrorType;
+
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.log('File save aborted');
+      errorType = 'abort';
+    } else {
+      console.error('Failed to save file:', error);
+      errorType = 'error';
+    }
+
+    return { success: false, fileHandle: null, error: errorType };
   }
 }

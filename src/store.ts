@@ -53,6 +53,12 @@ export const store = createStore(initialContext, {
     { fileHandle }: { fileHandle: FileSystemFileHandle | undefined },
   ) => {
     return {
+      outlineDoc: fileHandle
+        ? {
+            ...context.outlineDoc,
+            name: fileHandle.name.replace(/\.json$/, ''),
+          }
+        : context.outlineDoc,
       fileHandle,
     };
   },

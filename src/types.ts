@@ -2,6 +2,7 @@ import { JSONContent } from '@tiptap/react';
 import { PointMovement, Voice, VoiceScope } from '@/enums';
 
 export interface OutlineDoc {
+  name: string;
   parsed?: boolean;
   head: {
     title: string;
