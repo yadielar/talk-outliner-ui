@@ -16,7 +16,6 @@ import { useSelector } from '@xstate/store/react';
 import { Content, PointParsed } from '@/types';
 import { PointMovement, Voice, VoiceScope } from '@/enums';
 import { cn } from '@/lib/utils';
-import { findPoint } from '@/lib/document-utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
@@ -67,14 +66,20 @@ const voiceColor = cva<{ voice: Record<Voice, string> }>('', {
 const voiceBg = cva<{ voice: Record<Voice, string> }>('', {
   variants: {
     voice: {
-      none: 'bg-neutral group-[.collapsed]:hover:bg-neutral-active',
-      info: 'bg-info group-[.collapsed]:hover:bg-info-active',
-      question: 'bg-question group-[.collapsed]:hover:bg-question-active',
-      reference: 'bg-reference group-[.collapsed]:hover:bg-reference-active',
-      example: 'bg-example group-[.collapsed]:hover:bg-example-active',
-      story: 'bg-story group-[.collapsed]:hover:bg-story-active',
-      lesson: 'bg-lesson group-[.collapsed]:hover:bg-lesson-active',
-      action: 'bg-action group-[.collapsed]:hover:bg-action-active',
+      none: 'bg-neutral group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-neutral-active',
+      info: 'bg-info group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-info-active',
+      question:
+        'bg-question group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-question-active',
+      reference:
+        'bg-reference group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-reference-active',
+      example:
+        'bg-example group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-example-active',
+      story:
+        'bg-story group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-story-active',
+      lesson:
+        'bg-lesson group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-lesson-active',
+      action:
+        'bg-action group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-action-active',
     },
   },
 });
@@ -89,14 +94,9 @@ export const PointEditor = memo(function PointEditor({
   const isFirstLevel = point.position.length === 1;
 
   const expanded = useSelector(store, (state) => {
-    const { outlineDoc, focusedPointId } = state.context;
+    const { focusedPointId } = state.context;
     if (!focusedPointId) return false;
-    const focusedPoint = findPoint(
-      outlineDoc.body.points,
-      (point) => point.id === focusedPointId,
-    );
-    if (!focusedPoint) return false;
-    return focusedPoint.position[0] === point.position[0];
+    return focusedPointId === point.id;
   });
 
   const isLastRemaining = useSelector(store, (state) => {
@@ -208,23 +208,27 @@ export const PointEditor = memo(function PointEditor({
       id={point.id}
       className={cn(
         'mt-4',
-        !isFirstLevel && 'pl-4',
+        !isFirstLevel && 'ml-4',
         !expanded && 'collapsed group',
       )}
+      onClick={(event) => {
+        event.stopPropagation();
+        if (!expanded) {
+          focusPoint(point);
+        }
+      }}
     >
       {expanded && (
         <div data-name="toolbar" className="flex justify-between items-center">
           <ScrollArea className="flex-1" type="scroll">
             <div className="flex items-center w-max space-x-2 p-1 pr-2">
-              {isFirstLevel && (
-                <ToolbarButton
-                  tooltip="Collapse"
-                  onClick={unfocusPoint}
-                  disabled={!expanded}
-                >
-                  <ChevronsDownUp className="h-4 w-4" />
-                </ToolbarButton>
-              )}
+              <ToolbarButton
+                tooltip="Collapse"
+                onClick={unfocusPoint}
+                disabled={!expanded}
+              >
+                <ChevronsDownUp className="h-4 w-4" />
+              </ToolbarButton>
               <ToolbarButton
                 tooltip="Move up"
                 onClick={() => move(point, 'up')}
@@ -375,13 +379,12 @@ export const PointEditor = memo(function PointEditor({
         </div>
       )}
 
-      <div
+      <section
         data-name="container"
         className={cn(
           voiceScope === VoiceScope.Subtree && ['p-2', voiceBg({ voice })],
           !expanded && 'cursor-pointer',
         )}
-        onClick={() => focusPoint(point)}
       >
         <div
           data-name="line"
@@ -430,7 +433,7 @@ export const PointEditor = memo(function PointEditor({
             ))}
           </div>
         )}
-      </div>
+      </section>
       <AlertDialog open={alertDelete} onOpenChange={setAlertDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
