@@ -34,6 +34,12 @@ A tool specifically created for outlining a talk.
 - <kbd>left</kbd>, <kbd>up</kbd>, or <kbd>shift+space</kbd> : Focus and expand
   previous point
 
+### Editor mode only
+
+- <kbd>tab</kbd>, <kbd>shift</kbd> + <kbd>tab</kbd> : Navigate points and
+  toolbar buttons
+- <kbd>space</kbd> : While a point is focused, expands the point for editing
+
 ## Tips
 
 - On Chrome desktop, after the first save to a file, saving again automatically

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from '@xstate/store/react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { documentStorage } from '@/lib/document-storage';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,6 +13,19 @@ export function OutlineEditor() {
     store,
     (state) => state.context.focusedPointId,
   );
+
+  useHotkeys('space', (e) => {
+    e.preventDefault();
+
+    if (
+      document.activeElement?.getAttribute('data-name') === 'point-editor-root'
+    ) {
+      const pointId = document.activeElement?.id;
+      if (pointId) {
+        store.send({ type: 'focusPoint', point: { id: pointId } });
+      }
+    }
+  });
 
   useEffect(() => {
     documentStorage.saveToLocalStorage(outlineDoc);

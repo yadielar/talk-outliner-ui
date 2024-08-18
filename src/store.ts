@@ -144,7 +144,7 @@ export const store = createStore(initialContext, {
       lastFocusedPointId: newFocusedPoint?.id ?? null,
     };
   },
-  focusPoint: (context, { point }: { point: PointParsed }) => {
+  focusPoint: (context, { point }: { point: PointParsed | { id: string } }) => {
     return {
       focusedPointId: point.id,
       lastFocusedPointId: point.id,

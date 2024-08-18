@@ -16,7 +16,6 @@ import { useSelector } from '@xstate/store/react';
 import { Content, PointParsed } from '@/types';
 import { PointMovement, Voice, VoiceScope } from '@/enums';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   AlertDialog,
@@ -37,12 +36,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-
 import { Separator } from '@/components/ui/separator';
 import { ContentEditor } from '@/components/content-editor';
 import { ContentRenderer } from '@/components/content-renderer';
@@ -204,10 +203,11 @@ export const PointEditor = memo(function PointEditor({
 
   return (
     <div
-      data-name="root"
+      data-name="point-editor-root"
       id={point.id}
+      tabIndex={0}
       className={cn(
-        'mt-4',
+        'mt-4 outline-ring',
         !isFirstLevel && 'ml-4',
         !expanded && 'collapsed group',
       )}
@@ -219,68 +219,71 @@ export const PointEditor = memo(function PointEditor({
       }}
     >
       {expanded && (
-        <div data-name="toolbar" className="flex justify-between items-center">
+        <Toolbar
+          data-name="point-editor-toolbar"
+          className="flex justify-between items-center"
+        >
           <ScrollArea className="flex-1" type="scroll">
             <div className="flex items-center w-max space-x-2 p-1 pr-2">
-              <ToolbarButton
+              <ToolButton
                 tooltip="Collapse"
                 onClick={unfocusPoint}
                 disabled={!expanded}
               >
                 <ChevronsDownUp className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
+              </ToolButton>
+              <ToolButton
                 tooltip="Move up"
                 onClick={() => move(point, 'up')}
                 disabled={!point.movement.includes(PointMovement.MoveUp)}
               >
                 <MoveUp className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
+              </ToolButton>
+              <ToolButton
                 tooltip="Move down"
                 onClick={() => move(point, 'down')}
                 disabled={!point.movement.includes(PointMovement.MoveDown)}
               >
                 <MoveDown className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
+              </ToolButton>
+              <ToolButton
                 tooltip="Indent left"
                 onClick={() => indent(point, 'left')}
                 disabled={!point.movement.includes(PointMovement.IndentLeft)}
               >
                 <IndentDecrease className="h-4 w-4" />
-              </ToolbarButton>
-              <ToolbarButton
+              </ToolButton>
+              <ToolButton
                 tooltip="Indent right"
                 onClick={() => indent(point, 'right')}
                 disabled={!point.movement.includes(PointMovement.IndentRight)}
               >
                 <IndentIncrease className="h-4 w-4" />
-              </ToolbarButton>
+              </ToolButton>
               {typeof point.script === 'string' && !point.scriptRemoved ? (
-                <ToolbarButton
+                <ToolButton
                   tooltip="Remove script"
                   onClick={() => removeScript(point)}
                 >
                   <FileX2 className="h-4 w-4" />
-                </ToolbarButton>
+                </ToolButton>
               ) : (
-                <ToolbarButton
+                <ToolButton
                   tooltip="Add script"
                   onClick={() => addScript(point)}
                 >
                   <File className="h-4 w-4" />
-                </ToolbarButton>
+                </ToolButton>
               )}
 
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <ToolbarButton tooltip="Change voice">
+                <ToolButton tooltip="Change voice" asChild>
+                  <DropdownMenuTrigger>
                     <MicVocal
                       className={cn('h-4 w-4', voiceColor({ voice }))}
                     />
-                  </ToolbarButton>
-                </DropdownMenuTrigger>
+                  </DropdownMenuTrigger>
+                </ToolButton>
                 <DropdownMenuContent className="w-52">
                   <DropdownMenuLabel>Voice</DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -362,37 +365,37 @@ export const PointEditor = memo(function PointEditor({
           <Separator orientation="vertical" className="h-6 bg-foreground/10" />
 
           <div className="flex-none flex items-center space-x-2 pl-2">
-            <ToolbarButton
+            <ToolButton
               tooltip="Remove point"
               onClick={() => confirmRemove(point)}
               disabled={isLastRemaining}
             >
               <Trash className="h-4 w-4" />
-            </ToolbarButton>
-            <ToolbarButton
+            </ToolButton>
+            <ToolButton
               tooltip="Add point after"
               onClick={() => addAfter(point)}
             >
               <Plus className="h-4 w-4" />
-            </ToolbarButton>
+            </ToolButton>
           </div>
-        </div>
+        </Toolbar>
       )}
 
       <section
-        data-name="container"
+        data-name="point-editor-container"
         className={cn(
           voiceScope === VoiceScope.Subtree && ['p-2', voiceBg({ voice })],
           !expanded && 'cursor-pointer',
         )}
       >
         <div
-          data-name="line"
+          data-name="point-editor-line"
           className={cn(
             voiceScope === VoiceScope.Node && ['p-2', voiceBg({ voice })],
           )}
         >
-          <div data-name="idea">
+          <div data-name="point-editor-idea">
             {expanded ? (
               <ContentEditor
                 key={point.id}
@@ -413,7 +416,7 @@ export const PointEditor = memo(function PointEditor({
             !point.scriptRemoved &&
             expanded && (
               <div
-                data-name="script"
+                data-name="point-editor-script"
                 className="mt-2 pl-2 border-dotted border-foreground/20 border-l-2"
               >
                 <ContentEditor
@@ -454,19 +457,19 @@ export const PointEditor = memo(function PointEditor({
   );
 });
 
-const ToolbarButton = forwardRef<
-  React.ElementRef<typeof Button>,
-  React.ComponentPropsWithoutRef<typeof Button> & {
+const ToolButton = forwardRef<
+  React.ElementRef<typeof ToolbarButton>,
+  React.ComponentPropsWithoutRef<typeof ToolbarButton> & {
     tooltip: string;
   }
 >(({ tooltip, ...props }, ref) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="iconmini" ref={ref} {...props} />
+        <ToolbarButton variant="ghost" size="iconmini" ref={ref} {...props} />
       </TooltipTrigger>
       <TooltipContent>{tooltip}</TooltipContent>
     </Tooltip>
   );
 });
-ToolbarButton.displayName = 'ToolbarButton';
+ToolButton.displayName = 'ToolButton';
