@@ -373,11 +373,20 @@ export const PointEditor = memo(function PointEditor({
               onChange={(value) => changeIdea(point, value)}
               placeholder="Write your idea here..."
             />
-          ) : point.idea.length > 0 ? (
-            <ContentRenderer value={point.idea} />
           ) : (
-            <div className="text-sm italic text-muted-foreground/50 p-2">
-              Empty point
+            <div className="flex justify-between items-end">
+              {point.idea.length > 0 ? (
+                <ContentRenderer className="flex-1" value={point.idea} />
+              ) : (
+                <div className="flex-1 text-sm italic text-muted-foreground/50 p-2">
+                  Empty point
+                </div>
+              )}
+              {!expanded &&
+                typeof point.script === 'string' &&
+                !point.scriptRemoved && (
+                  <i className="flex-none text-muted-foreground ml-2">···</i>
+                )}
             </div>
           )}
         </div>
