@@ -43,6 +43,11 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
+import {
+  PointBox,
+  PointBoxLine,
+  PointBoxChildren,
+} from '@/components/point-box';
 import { ContentEditor } from '@/components/content-editor';
 import { ContentRenderer } from '@/components/content-renderer';
 import { store } from '@/store';
@@ -58,27 +63,6 @@ const voiceColor = cva<{ voice: Record<Voice, string> }>('', {
       story: 'text-story-foreground',
       lesson: 'text-lesson-foreground',
       action: 'text-action-foreground',
-    },
-  },
-});
-
-const voiceBg = cva<{ voice: Record<Voice, string> }>('', {
-  variants: {
-    voice: {
-      none: 'bg-neutral group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-neutral-active',
-      info: 'bg-info group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-info-active',
-      question:
-        'bg-question group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-question-active',
-      reference:
-        'bg-reference group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-reference-active',
-      example:
-        'bg-example group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-example-active',
-      story:
-        'bg-story group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-story-active',
-      lesson:
-        'bg-lesson group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-lesson-active',
-      action:
-        'bg-action group-[.collapsed]:[&:not(:has(section:hover))]:hover:bg-action-active',
     },
   },
 });
@@ -202,241 +186,227 @@ export const PointEditor = memo(function PointEditor({
   }
 
   return (
-    <div
-      data-name="point-editor-root"
-      id={point.id}
-      tabIndex={0}
-      className={cn(
-        'mt-4 outline-ring',
-        !isFirstLevel && 'ml-4',
-        !expanded && 'collapsed group',
-      )}
-      onClick={(event) => {
-        event.stopPropagation();
-        if (!expanded) {
-          focusPoint(point);
-        }
-      }}
-    >
-      {expanded && (
-        <Toolbar
-          data-name="point-editor-toolbar"
-          className="flex justify-between items-center"
-        >
-          <ScrollArea className="flex-1" type="scroll">
-            <div className="flex items-center w-max space-x-2 p-1 pr-2">
-              <ToolButton
-                tooltip="Collapse"
-                onClick={unfocusPoint}
-                disabled={!expanded}
-              >
-                <ChevronsDownUp className="h-4 w-4" />
-              </ToolButton>
-              <ToolButton
-                tooltip="Move up"
-                onClick={() => move(point, 'up')}
-                disabled={!point.movement.includes(PointMovement.MoveUp)}
-              >
-                <MoveUp className="h-4 w-4" />
-              </ToolButton>
-              <ToolButton
-                tooltip="Move down"
-                onClick={() => move(point, 'down')}
-                disabled={!point.movement.includes(PointMovement.MoveDown)}
-              >
-                <MoveDown className="h-4 w-4" />
-              </ToolButton>
-              <ToolButton
-                tooltip="Indent left"
-                onClick={() => indent(point, 'left')}
-                disabled={!point.movement.includes(PointMovement.IndentLeft)}
-              >
-                <IndentDecrease className="h-4 w-4" />
-              </ToolButton>
-              <ToolButton
-                tooltip="Indent right"
-                onClick={() => indent(point, 'right')}
-                disabled={!point.movement.includes(PointMovement.IndentRight)}
-              >
-                <IndentIncrease className="h-4 w-4" />
-              </ToolButton>
-              {typeof point.script === 'string' && !point.scriptRemoved ? (
-                <ToolButton
-                  tooltip="Remove script"
-                  onClick={() => removeScript(point)}
-                >
-                  <FileX2 className="h-4 w-4" />
-                </ToolButton>
-              ) : (
-                <ToolButton
-                  tooltip="Add script"
-                  onClick={() => addScript(point)}
-                >
-                  <File className="h-4 w-4" />
-                </ToolButton>
-              )}
-
-              <DropdownMenu>
-                <ToolButton tooltip="Change voice" asChild>
-                  <DropdownMenuTrigger>
-                    <MicVocal
-                      className={cn('h-4 w-4', voiceColor({ voice }))}
-                    />
-                  </DropdownMenuTrigger>
-                </ToolButton>
-                <DropdownMenuContent className="w-52">
-                  <DropdownMenuLabel>Voice</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioGroup
-                    value={voice}
-                    onValueChange={(value) =>
-                      changeVoice(point, value as Voice)
-                    }
-                  >
-                    <DropdownMenuRadioItem
-                      value={Voice.None}
-                      className={voiceColor({ voice: Voice.None })}
-                    >
-                      None
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value={Voice.Info}
-                      className={voiceColor({ voice: Voice.Info })}
-                    >
-                      Info
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value={Voice.Question}
-                      className={voiceColor({ voice: Voice.Question })}
-                    >
-                      Question
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value={Voice.Reference}
-                      className={voiceColor({ voice: Voice.Reference })}
-                    >
-                      Reference
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value={Voice.Example}
-                      className={voiceColor({ voice: Voice.Example })}
-                    >
-                      Example
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value={Voice.Story}
-                      className={voiceColor({ voice: Voice.Story })}
-                    >
-                      Story
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value={Voice.Lesson}
-                      className={voiceColor({ voice: Voice.Lesson })}
-                    >
-                      Lesson
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value={Voice.Action}
-                      className={voiceColor({ voice: Voice.Action })}
-                    >
-                      Action
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioGroup
-                    value={voiceScope}
-                    onValueChange={(value) =>
-                      changeVoiceScope(point, value as VoiceScope)
-                    }
-                  >
-                    <DropdownMenuRadioItem value={VoiceScope.Subtree}>
-                      Apply to child points
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value={VoiceScope.Node}>
-                      Apply only to this point
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-
-          <Separator orientation="vertical" className="h-6 bg-foreground/10" />
-
-          <div className="flex-none flex items-center space-x-2 pl-2">
-            <ToolButton
-              tooltip="Remove point"
-              onClick={() => confirmRemove(point)}
-              disabled={isLastRemaining}
-            >
-              <Trash className="h-4 w-4" />
-            </ToolButton>
-            <ToolButton
-              tooltip="Add point after"
-              onClick={() => addAfter(point)}
-            >
-              <Plus className="h-4 w-4" />
-            </ToolButton>
-          </div>
-        </Toolbar>
-      )}
-
-      <section
-        data-name="point-editor-container"
-        className={cn(
-          voiceScope === VoiceScope.Subtree && ['p-2', voiceBg({ voice })],
-          !expanded && 'cursor-pointer',
-        )}
+    <PointBox point={point} active={expanded}>
+      <PointBoxLine
+        id={point.id}
+        className={cn('outline-ring', !expanded && 'cursor-pointer')}
+        tabIndex={0}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (!expanded) {
+            focusPoint(point);
+          }
+        }}
       >
-        <div
-          data-name="point-editor-line"
-          className={cn(
-            voiceScope === VoiceScope.Node && ['p-2', voiceBg({ voice })],
-          )}
-        >
-          <div data-name="point-editor-idea">
-            {expanded ? (
-              <ContentEditor
-                key={point.id}
-                initialValue={point.idea}
-                onChange={(value) => changeIdea(point, value)}
-                placeholder="Write your idea here..."
-              />
-            ) : point.idea.length > 0 ? (
-              <ContentRenderer value={point.idea} />
-            ) : (
-              <div className="text-sm italic text-muted-foreground/50 p-2">
-                Empty point
-              </div>
-            )}
-          </div>
+        {expanded && (
+          <Toolbar
+            data-name="point-editor-toolbar"
+            className="flex justify-between items-center text-foreground -mx-1 mb-2"
+          >
+            <ScrollArea className="flex-1" type="scroll">
+              <div className="flex items-center w-max space-x-2 p-1 pr-2">
+                <ToolButton
+                  tooltip="Collapse"
+                  onClick={unfocusPoint}
+                  disabled={!expanded}
+                >
+                  <ChevronsDownUp className="h-4 w-4" />
+                </ToolButton>
+                <ToolButton
+                  tooltip="Move up"
+                  onClick={() => move(point, 'up')}
+                  disabled={!point.movement.includes(PointMovement.MoveUp)}
+                >
+                  <MoveUp className="h-4 w-4" />
+                </ToolButton>
+                <ToolButton
+                  tooltip="Move down"
+                  onClick={() => move(point, 'down')}
+                  disabled={!point.movement.includes(PointMovement.MoveDown)}
+                >
+                  <MoveDown className="h-4 w-4" />
+                </ToolButton>
+                <ToolButton
+                  tooltip="Indent left"
+                  onClick={() => indent(point, 'left')}
+                  disabled={!point.movement.includes(PointMovement.IndentLeft)}
+                >
+                  <IndentDecrease className="h-4 w-4" />
+                </ToolButton>
+                <ToolButton
+                  tooltip="Indent right"
+                  onClick={() => indent(point, 'right')}
+                  disabled={!point.movement.includes(PointMovement.IndentRight)}
+                >
+                  <IndentIncrease className="h-4 w-4" />
+                </ToolButton>
+                {typeof point.script === 'string' && !point.scriptRemoved ? (
+                  <ToolButton
+                    tooltip="Remove script"
+                    onClick={() => removeScript(point)}
+                  >
+                    <FileX2 className="h-4 w-4" />
+                  </ToolButton>
+                ) : (
+                  <ToolButton
+                    tooltip="Add script"
+                    onClick={() => addScript(point)}
+                  >
+                    <File className="h-4 w-4" />
+                  </ToolButton>
+                )}
 
-          {typeof point.script === 'string' &&
-            !point.scriptRemoved &&
-            expanded && (
-              <div
-                data-name="point-editor-script"
-                className="mt-2 pl-2 border-dotted border-foreground/20 border-l-2"
-              >
-                <ContentEditor
-                  key={point.id}
-                  initialValue={point.script}
-                  onChange={(value) => changeScript(point, value)}
-                  placeholder="Write your script here..."
-                />
+                <DropdownMenu>
+                  <ToolButton tooltip="Change voice" asChild>
+                    <DropdownMenuTrigger>
+                      <MicVocal
+                        className={cn('h-4 w-4', voiceColor({ voice }))}
+                      />
+                    </DropdownMenuTrigger>
+                  </ToolButton>
+                  <DropdownMenuContent className="w-52">
+                    <DropdownMenuLabel>Voice</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup
+                      value={voice}
+                      onValueChange={(value) =>
+                        changeVoice(point, value as Voice)
+                      }
+                    >
+                      <DropdownMenuRadioItem
+                        value={Voice.None}
+                        className={voiceColor({ voice: Voice.None })}
+                      >
+                        None
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={Voice.Info}
+                        className={voiceColor({ voice: Voice.Info })}
+                      >
+                        Info
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={Voice.Question}
+                        className={voiceColor({ voice: Voice.Question })}
+                      >
+                        Question
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={Voice.Reference}
+                        className={voiceColor({ voice: Voice.Reference })}
+                      >
+                        Reference
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={Voice.Example}
+                        className={voiceColor({ voice: Voice.Example })}
+                      >
+                        Example
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={Voice.Story}
+                        className={voiceColor({ voice: Voice.Story })}
+                      >
+                        Story
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={Voice.Lesson}
+                        className={voiceColor({ voice: Voice.Lesson })}
+                      >
+                        Lesson
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={Voice.Action}
+                        className={voiceColor({ voice: Voice.Action })}
+                      >
+                        Action
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup
+                      value={voiceScope}
+                      onValueChange={(value) =>
+                        changeVoiceScope(point, value as VoiceScope)
+                      }
+                    >
+                      <DropdownMenuRadioItem value={VoiceScope.Subtree}>
+                        Apply to child points
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value={VoiceScope.Node}>
+                        Apply only to this point
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-            )}
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+
+            <Separator
+              orientation="vertical"
+              className="h-6 bg-foreground/10"
+            />
+
+            <div className="flex-none flex items-center space-x-2 p-1 pb-2 pl-2">
+              <ToolButton
+                tooltip="Remove point"
+                onClick={() => confirmRemove(point)}
+                disabled={isLastRemaining}
+              >
+                <Trash className="h-4 w-4" />
+              </ToolButton>
+              <ToolButton
+                tooltip="Add point after"
+                onClick={() => addAfter(point)}
+              >
+                <Plus className="h-4 w-4" />
+              </ToolButton>
+            </div>
+          </Toolbar>
+        )}
+
+        <div data-name="point-editor-idea">
+          {expanded ? (
+            <ContentEditor
+              key={point.id}
+              initialValue={point.idea}
+              onChange={(value) => changeIdea(point, value)}
+              placeholder="Write your idea here..."
+            />
+          ) : point.idea.length > 0 ? (
+            <ContentRenderer value={point.idea} />
+          ) : (
+            <div className="text-sm italic text-muted-foreground/50 p-2">
+              Empty point
+            </div>
+          )}
         </div>
 
-        {point.points && point.points.length > 0 && (
-          <div>
-            {point.points.map((subpoint) => (
-              <PointEditor key={subpoint.id} point={subpoint} />
-            ))}
-          </div>
-        )}
-      </section>
+        {typeof point.script === 'string' &&
+          !point.scriptRemoved &&
+          expanded && (
+            <div
+              data-name="point-editor-script"
+              className="mt-2 pl-2 border-dotted border-foreground/20 border-l-2"
+            >
+              <ContentEditor
+                key={point.id}
+                initialValue={point.script}
+                onChange={(value) => changeScript(point, value)}
+                placeholder="Write your script here..."
+              />
+            </div>
+          )}
+      </PointBoxLine>
+
+      {point.points && point.points.length > 0 && (
+        <PointBoxChildren>
+          {point.points.map((subpoint) => (
+            <PointEditor key={subpoint.id} point={subpoint} />
+          ))}
+        </PointBoxChildren>
+      )}
+
       <AlertDialog open={alertDelete} onOpenChange={setAlertDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -453,7 +423,7 @@ export const PointEditor = memo(function PointEditor({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PointBox>
   );
 });
 

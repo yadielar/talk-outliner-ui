@@ -14,14 +14,11 @@ export function OutlineEditor() {
     (state) => state.context.focusedPointId,
   );
 
-  useHotkeys('space', (e) => {
-    e.preventDefault();
-
-    if (
-      document.activeElement?.getAttribute('data-name') === 'point-editor-root'
-    ) {
+  useHotkeys(['space', 'enter'], (e) => {
+    if (document.activeElement?.getAttribute('data-name') === 'point-line') {
       const pointId = document.activeElement?.id;
       if (pointId) {
+        e.preventDefault();
         store.send({ type: 'focusPoint', point: { id: pointId } });
       }
     }
