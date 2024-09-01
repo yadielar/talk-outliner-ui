@@ -20,6 +20,10 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
     (state) => state.context.focusedPointId === point.id,
   );
 
+  const fontSizeClass = useSelector(store, (state) =>
+    state.context.fontSize === 'xl' ? 'font-size-xl' : 'font-size-base',
+  );
+
   function togglePoint() {
     store.send({ type: 'togglePointFocus', point });
   }
@@ -36,7 +40,10 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
         >
           <div className="flex justify-between items-end">
             {point.idea.length > 0 ? (
-              <ContentRenderer className="flex-1" value={point.idea} />
+              <ContentRenderer
+                className={cn('flex-1', fontSizeClass)}
+                value={point.idea}
+              />
             ) : (
               <div className="flex-1 text-sm italic text-muted-foreground/50 p-2">
                 Empty point
@@ -53,7 +60,7 @@ export const PointView = memo(function PointView({ point }: PointViewProps) {
           !point.scriptRemoved &&
           expanded && (
             <div data-name="point-view-script" className="mt-2">
-              <ContentRenderer value={point.script} />
+              <ContentRenderer className={fontSizeClass} value={point.script} />
             </div>
           )}
       </PointBoxLine>

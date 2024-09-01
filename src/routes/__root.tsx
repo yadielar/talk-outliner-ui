@@ -1,7 +1,8 @@
 import React, { Suspense, useState } from 'react';
-import { FilePlus, FolderOpen, Save } from 'lucide-react';
+import { AArrowDown, AArrowUp, FilePlus, FolderOpen, Save } from 'lucide-react';
 import {
   createRootRoute,
+  MatchRoute,
   Outlet,
   useMatchRoute,
   useNavigate,
@@ -43,6 +44,8 @@ function Root() {
   const hasActiveFile = useSelector(store, (state) =>
     Boolean(state.context.fileHandle),
   );
+
+  const fontSize = useSelector(store, (state) => state.context.fontSize);
 
   useHotkeys(
     'mod+o',
@@ -137,6 +140,10 @@ function Root() {
     }
   }
 
+  function toggleFontSize() {
+    store.send({ type: 'toggleFontSize' });
+  }
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <TooltipProvider>
@@ -175,7 +182,20 @@ function Root() {
                   <NavTabsLink to="/view">View</NavTabsLink>
                 </NavTabs>
               </div>
-              <div className="flex-none md:min-w-40 flex justify-end items-center">
+              <div className="flex-none md:min-w-40 flex justify-end items-center space-x-2">
+                <MatchRoute to="/view">
+                  <Button
+                    variant="outline"
+                    size="iconmini"
+                    onClick={toggleFontSize}
+                  >
+                    {fontSize === 'base' ? (
+                      <AArrowUp className="h-[1.2rem] w-[1.2rem]" />
+                    ) : (
+                      <AArrowDown className="h-[1.2rem] w-[1.2rem]" />
+                    )}
+                  </Button>
+                </MatchRoute>
                 <ColorSchemeToggle />
               </div>
             </div>

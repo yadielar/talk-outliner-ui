@@ -28,6 +28,7 @@ type AppContext = {
   fileHandle: FileSystemFileHandle | undefined;
   focusedPointId: string | null;
   lastFocusedPointId: string | null;
+  fontSize: 'base' | 'xl';
 };
 
 const initialContext: AppContext = getInitialContext();
@@ -209,6 +210,12 @@ export const store = createStore(initialContext, {
       };
     }
   },
+  toggleFontSize: (context) => {
+    return {
+      fontSize:
+        context.fontSize === 'base' ? ('xl' as const) : ('base' as const),
+    };
+  },
 });
 
 // Helpers
@@ -244,6 +251,7 @@ function getInitialContext(): AppContext {
     fileHandle: undefined,
     focusedPointId: doc.body.points[0] ? doc.body.points[0].id : null,
     lastFocusedPointId: null,
+    fontSize: 'base',
   };
 }
 

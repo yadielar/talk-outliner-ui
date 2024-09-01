@@ -169,9 +169,14 @@
 @layer components {
   /* Styles for elements that make up the content */
   .Content {
-    @apply max-w-none prose prose-slate dark:prose-invert;
-    @apply prose-p:m-0 prose-ul:my-1 prose-ol:my-1 prose-li:my-0;
-    @apply prose-blockquote:my-1 prose-blockquote:text-quote prose-blockquote:font-normal;
+    @apply max-w-none prose prose-base prose-slate dark:prose-invert space-y-2;
+    @apply prose-p:my-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0;
+    @apply prose-blockquote:my-0 prose-blockquote:text-quote prose-blockquote:font-normal;
+  }
+  .Content.font-size-xl {
+    @apply max-w-none prose prose-xl prose-slate dark:prose-invert space-y-2;
+    @apply prose-p:my-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0;
+    @apply prose-blockquote:my-0 prose-blockquote:text-quote prose-blockquote:font-normal;
   }
   .Content blockquote {
     quotes: none;

@@ -110,6 +110,16 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       typography: {
+        base: {
+          css: {
+            lineHeight: '1.4',
+          },
+        },
+        xl: {
+          css: {
+            lineHeight: '1.4',
+          },
+        },
         slate: {
           css: {
             '--tw-prose-body': 'inherit',
