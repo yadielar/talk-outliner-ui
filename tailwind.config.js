@@ -124,6 +124,7 @@ export default {
           css: {
             '--tw-prose-body': 'inherit',
             '--tw-prose-bold': 'inherit',
+            '--tw-prose-quote-borders': 'hsl(var(--quote) / 0.25)',
           },
         },
       },

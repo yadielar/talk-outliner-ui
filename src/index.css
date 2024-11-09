@@ -171,18 +171,19 @@
   .Content {
     @apply max-w-none prose prose-base prose-slate dark:prose-invert space-y-2;
     @apply prose-p:my-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0;
-    @apply prose-blockquote:my-0 prose-blockquote:text-quote prose-blockquote:font-normal;
+    @apply prose-blockquote:my-0 prose-blockquote:text-quote prose-blockquote:font-normal prose-blockquote:not-italic;
   }
   .Content.font-size-xl {
     @apply max-w-none prose prose-xl prose-slate dark:prose-invert space-y-2;
     @apply prose-p:my-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0;
-    @apply prose-blockquote:my-0 prose-blockquote:text-quote prose-blockquote:font-normal;
+    @apply prose-blockquote:my-0 prose-blockquote:text-quote prose-blockquote:font-normal prose-blockquote:not-italic;
   }
   .Content blockquote {
     quotes: none;
   }
-  .Content q {
-    @apply text-quote italic;
+  .Content q,
+  .Content q mark[data-voice] {
+    @apply text-quote;
     quotes: none;
   }
   .Content p:empty:before {
