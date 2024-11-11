@@ -124,6 +124,16 @@ export const ContentEditor = memo(function ContentEditor({
                   <Strikethrough className="h-4 w-4" />
                 </ToggleGroupItem>
                 <ToggleGroupItem
+                  value="quote"
+                  aria-label="Toggle quote"
+                  onClick={() => editor.chain().focus().toggleQuote().run()}
+                >
+                  <Quote className="h-4 w-4" />
+                </ToggleGroupItem>
+
+                <Separator orientation="vertical" className="h-5 mx-3" />
+
+                <ToggleGroupItem
                   value="bulletList"
                   aria-label="Toggle bullet list"
                   onClick={() =>
@@ -149,13 +159,6 @@ export const ContentEditor = memo(function ContentEditor({
                   }
                 >
                   <TextQuote className="h-4 w-4" />
-                </ToggleGroupItem>
-                <ToggleGroupItem
-                  value="quote"
-                  aria-label="Toggle quote"
-                  onClick={() => editor.chain().focus().toggleQuote().run()}
-                >
-                  <Quote className="h-4 w-4" />
                 </ToggleGroupItem>
               </ToggleGroup>
 
