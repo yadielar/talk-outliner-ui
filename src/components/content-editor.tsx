@@ -5,6 +5,8 @@ import {
   Italic,
   List,
   ListOrdered,
+  ArrowLeftToLine,
+  ArrowRightToLine,
   Quote,
   Strikethrough,
   TextQuote,
@@ -15,6 +17,7 @@ import { Voice } from '@/enums';
 import { voices } from '@/constants';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useContentEditorExtensions } from '@/lib/content-extensions';
 
@@ -161,6 +164,28 @@ export const ContentEditor = memo(function ContentEditor({
                   <TextQuote className="h-4 w-4" />
                 </ToggleGroupItem>
               </ToggleGroup>
+
+              <div className="flex items-center justify-center gap-1">
+                <Button
+                  className="h-9 w-auto px-2.5"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() =>
+                    editor.chain().focus().liftListItem('listItem').run()
+                  }
+                >
+                  <ArrowLeftToLine className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() =>
+                    editor.chain().focus().sinkListItem('listItem').run()
+                  }
+                >
+                  <ArrowRightToLine className="h-4 w-4" />
+                </Button>
+              </div>
 
               <Separator orientation="vertical" className="h-5" />
 
