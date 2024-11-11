@@ -1,12 +1,12 @@
 import React, { forwardRef, memo, useState } from 'react';
 import {
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
   ChevronsDownUp,
   File,
-  IndentDecrease,
-  IndentIncrease,
   MicVocal,
-  MoveUp,
-  MoveDown,
   Plus,
   Trash,
   FileX2,
@@ -217,28 +217,28 @@ export const PointEditor = memo(function PointEditor({
                   onClick={() => move(point, 'up')}
                   disabled={!point.movement.includes(PointMovement.MoveUp)}
                 >
-                  <MoveUp className="h-4 w-4" />
+                  <ArrowUp className="h-4 w-4" />
                 </ToolButton>
                 <ToolButton
                   tooltip="Move down"
                   onClick={() => move(point, 'down')}
                   disabled={!point.movement.includes(PointMovement.MoveDown)}
                 >
-                  <MoveDown className="h-4 w-4" />
+                  <ArrowDown className="h-4 w-4" />
                 </ToolButton>
                 <ToolButton
                   tooltip="Indent left"
                   onClick={() => indent(point, 'left')}
                   disabled={!point.movement.includes(PointMovement.IndentLeft)}
                 >
-                  <IndentDecrease className="h-4 w-4" />
+                  <ArrowLeft className="h-4 w-4" />
                 </ToolButton>
                 <ToolButton
                   tooltip="Indent right"
                   onClick={() => indent(point, 'right')}
                   disabled={!point.movement.includes(PointMovement.IndentRight)}
                 >
-                  <IndentIncrease className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4" />
                 </ToolButton>
                 {typeof point.script === 'string' && !point.scriptRemoved ? (
                   <ToolButton
